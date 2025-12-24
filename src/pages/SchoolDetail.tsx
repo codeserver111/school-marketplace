@@ -21,6 +21,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import ImageGallery from "@/components/ImageGallery";
 import AmenityBadge from "@/components/AmenityBadge";
 import EnquiryForm from "@/components/EnquiryForm";
+import ReviewSection from "@/components/ReviewSection";
 import { getSchoolBySlug } from "@/data/mockSchools";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -234,6 +235,9 @@ const SchoolDetail = () => {
             ))}
           </div>
         </div>
+
+        {/* Reviews Section */}
+        <ReviewSection schoolId={school.id} schoolName={school.name} />
 
         {/* Contact */}
         <div className="mb-6">
