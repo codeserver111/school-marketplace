@@ -1,10 +1,12 @@
-import { Star, MapPin, Bus, Home, Heart } from "lucide-react";
+import { Star, MapPin, Bus, Home, Heart, GitCompare } from "lucide-react";
 import { Link } from "react-router-dom";
 import { School } from "@/data/mockSchools";
 import { Button } from "./ui/button";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { useComparison } from "@/contexts/ComparisonContext";
+import { toast } from "@/hooks/use-toast";
 
 interface SchoolCardProps {
   school: School;
@@ -14,6 +16,30 @@ interface SchoolCardProps {
 const SchoolCard = ({ school, index = 0 }: SchoolCardProps) => {
   const [isSaved, setIsSaved] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const { addSchool, removeSchool, isSelected, canAdd } = useComparison();
+
+  const selected = isSelected(school.id);
+
+  const handleCompareToggle = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (selected) {
+      removeSchool(school.id);
+    } else {
+      if (!canAdd) {
+        toast({
+          title: "Maximum 3 schools",
+          description: "Remove a school to add another",
+          variant: "destructive",
+        });
+        return;
+      }
+      addSchool(school);
+      toast({
+        title: "Added to compare",
+        description: `${school.name} added`,
+      });
+    }
+  };
 
   return (
     <motion.div
@@ -22,7 +48,10 @@ const SchoolCard = ({ school, index = 0 }: SchoolCardProps) => {
       transition={{ delay: index * 0.05 }}
     >
       <Link to={`/school/${school.slug}`} className="block">
-        <article className="bg-card rounded-xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 group">
+        <article className={cn(
+          "bg-card rounded-xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 group",
+          selected && "ring-2 ring-primary"
+        )}>
           {/* Image section */}
           <div className="relative aspect-[16/10] overflow-hidden">
             {!imageLoaded && (
@@ -39,6 +68,21 @@ const SchoolCard = ({ school, index = 0 }: SchoolCardProps) => {
             />
             <div className="absolute inset-0 bg-gradient-overlay opacity-40" />
             
+            {/* Compare button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              className={cn(
+                "absolute top-3 left-3 backdrop-blur-sm h-8 w-8",
+                selected 
+                  ? "bg-primary text-primary-foreground hover:bg-primary/90" 
+                  : "bg-card/80 hover:bg-card"
+              )}
+              onClick={handleCompareToggle}
+            >
+              <GitCompare className="w-4 h-4" />
+            </Button>
+
             {/* Save button */}
             <Button
               variant="ghost"
