@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { useComparison } from "@/contexts/ComparisonContext";
+import { useUser } from "@/contexts/UserContext";
 import { toast } from "@/hooks/use-toast";
 
 interface SchoolCardProps {
@@ -14,11 +15,12 @@ interface SchoolCardProps {
 }
 
 const SchoolCard = ({ school, index = 0 }: SchoolCardProps) => {
-  const [isSaved, setIsSaved] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const { addSchool, removeSchool, isSelected, canAdd } = useComparison();
+  const { isSaved, saveSchool, unsaveSchool } = useUser();
 
   const selected = isSelected(school.id);
+  const saved = isSaved(school.id);
 
   const handleCompareToggle = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -37,6 +39,23 @@ const SchoolCard = ({ school, index = 0 }: SchoolCardProps) => {
       toast({
         title: "Added to compare",
         description: `${school.name} added`,
+      });
+    }
+  };
+
+  const handleSaveToggle = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (saved) {
+      unsaveSchool(school.id);
+      toast({
+        title: "Removed from saved",
+        description: `${school.name} removed`,
+      });
+    } else {
+      saveSchool(school);
+      toast({
+        title: "Saved!",
+        description: `${school.name} added to your list`,
       });
     }
   };
@@ -88,15 +107,12 @@ const SchoolCard = ({ school, index = 0 }: SchoolCardProps) => {
               variant="ghost"
               size="icon"
               className="absolute top-3 right-3 bg-card/80 backdrop-blur-sm hover:bg-card h-8 w-8"
-              onClick={(e) => {
-                e.preventDefault();
-                setIsSaved(!isSaved);
-              }}
+              onClick={handleSaveToggle}
             >
               <Heart
                 className={cn(
                   "w-4 h-4 transition-colors",
-                  isSaved ? "fill-primary text-primary" : "text-foreground"
+                  saved ? "fill-primary text-primary" : "text-foreground"
                 )}
               />
             </Button>
@@ -119,10 +135,27 @@ const SchoolCard = ({ school, index = 0 }: SchoolCardProps) => {
               {school.name}
             </h3>
             
-            <div className="flex items-center gap-1 text-muted-foreground text-sm mb-3">
+            <div className="flex items-center gap-1 text-muted-foreground text-sm mb-2">
               <MapPin className="w-3.5 h-3.5 shrink-0" />
               <span className="truncate">{school.address}</span>
               <span className="shrink-0">• {school.distance} km</span>
+            </div>
+
+            {/* Class levels */}
+            <div className="flex flex-wrap gap-1 mb-3">
+              {school.classLevels.slice(0, 3).map((level) => (
+                <span 
+                  key={level}
+                  className="text-xs bg-secondary text-secondary-foreground px-2 py-0.5 rounded"
+                >
+                  {level}
+                </span>
+              ))}
+              {school.classLevels.length > 3 && (
+                <span className="text-xs text-muted-foreground">
+                  +{school.classLevels.length - 3} more
+                </span>
+              )}
             </div>
 
             <div className="flex items-center justify-between">

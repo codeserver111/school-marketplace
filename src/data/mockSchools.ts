@@ -1,3 +1,5 @@
+export type ClassLevel = "Play School" | "Primary" | "Middle" | "High School";
+
 export interface School {
   id: string;
   name: string;
@@ -20,12 +22,14 @@ export interface School {
   studentCount: number;
   teacherRatio: string;
   grades: string;
+  classLevels: ClassLevel[];
   amenities: string[];
   highlights: string[];
   description: string;
   timings: string;
   contactPhone: string;
   contactEmail: string;
+  isPopular?: boolean;
 }
 
 export const schools: School[] = [
@@ -55,12 +59,14 @@ export const schools: School[] = [
     studentCount: 4500,
     teacherRatio: "1:25",
     grades: "Nursery - XII",
+    classLevels: ["Play School", "Primary", "Middle", "High School"],
     amenities: ["Swimming Pool", "Sports Complex", "Science Labs", "Library", "Auditorium", "Smart Classrooms", "Cafeteria", "Medical Room"],
     highlights: ["CBSE National Toppers", "100% Board Results", "International Collaborations"],
     description: "Delhi Public School is one of the largest chains of private schools in India. Known for academic excellence and holistic development of students through sports, arts, and extracurricular activities.",
     timings: "8:00 AM - 2:30 PM",
     contactPhone: "+91 98765 43210",
-    contactEmail: "admissions@dpsvasantkunj.edu.in"
+    contactEmail: "admissions@dpsvasantkunj.edu.in",
+    isPopular: true
   },
   {
     id: "2",
@@ -88,6 +94,7 @@ export const schools: School[] = [
     studentCount: 3200,
     teacherRatio: "1:28",
     grades: "Nursery - XII",
+    classLevels: ["Play School", "Primary", "Middle", "High School"],
     amenities: ["Basketball Court", "Computer Labs", "Music Room", "Dance Studio", "Library", "Playground"],
     highlights: ["Award-winning Sports Program", "Robotics Club", "MUN Participation"],
     description: "Ryan International School focuses on developing well-rounded individuals through a balanced curriculum emphasizing academics, sports, and values education.",
@@ -121,12 +128,14 @@ export const schools: School[] = [
     studentCount: 1800,
     teacherRatio: "1:20",
     grades: "Nursery - XII",
+    classLevels: ["Primary", "Middle", "High School"],
     amenities: ["Art Gallery", "Amphitheatre", "Tennis Courts", "Gymnasium", "Research Labs", "Recording Studio"],
     highlights: ["IIT/NEET Coaching", "Cultural Exchange Programs", "State-of-art Infrastructure"],
     description: "Sanskriti School is known for its progressive approach to education, combining academic rigor with cultural awareness and environmental consciousness.",
     timings: "8:15 AM - 3:00 PM",
     contactPhone: "+91 98765 43212",
-    contactEmail: "admissions@sanskritischool.edu.in"
+    contactEmail: "admissions@sanskritischool.edu.in",
+    isPopular: true
   },
   {
     id: "4",
@@ -153,7 +162,8 @@ export const schools: School[] = [
     established: 1956,
     studentCount: 2800,
     teacherRatio: "1:22",
-    grades: "Nursery - XII",
+    grades: "Play School - XII",
+    classLevels: ["Play School", "Primary", "Middle", "High School"],
     amenities: ["Yoga Hall", "Meditation Center", "Organic Garden", "Library", "Sports Fields", "Art Studios"],
     highlights: ["Value-based Education", "Holistic Development", "Eco-friendly Campus"],
     description: "Inspired by Sri Aurobindo's philosophy, the school emphasizes integral education that develops the physical, vital, mental, psychic, and spiritual aspects of each child.",
@@ -187,12 +197,14 @@ export const schools: School[] = [
     studentCount: 2200,
     teacherRatio: "1:15",
     grades: "Nursery - XII",
+    classLevels: ["Play School", "Primary", "Middle", "High School"],
     amenities: ["Olympic Pool", "Theatre", "Innovation Lab", "Counseling Center", "Sports Academy", "Digital Library"],
     highlights: ["Cambridge Partnership", "Global Student Exchange", "Award-winning Arts Program"],
     description: "The Shri Ram School is one of India's premier educational institutions, known for its innovative teaching methodology and exceptional results in board examinations.",
     timings: "8:00 AM - 2:45 PM",
     contactPhone: "+91 98765 43214",
-    contactEmail: "admissions@tsrs.org"
+    contactEmail: "admissions@tsrs.org",
+    isPopular: true
   },
   {
     id: "6",
@@ -220,20 +232,98 @@ export const schools: School[] = [
     studentCount: 3800,
     teacherRatio: "1:24",
     grades: "Nursery - XII",
+    classLevels: ["Primary", "Middle", "High School"],
     amenities: ["Robotics Lab", "3D Printing", "Sports Complex", "Auditorium", "Language Lab", "Cafeteria"],
     highlights: ["STEM Focus", "International Trips", "Entrepreneurship Program"],
     description: "Part of the Amity Education Group, the school combines academic excellence with exposure to global opportunities and cutting-edge technology.",
     timings: "7:30 AM - 2:00 PM",
     contactPhone: "+91 98765 43215",
     contactEmail: "info@amitysaket.edu.in"
+  },
+  {
+    id: "7",
+    name: "Little Angels Play School",
+    slug: "little-angels-play-school",
+    tagline: "Where Learning Begins with Joy",
+    board: "CBSE",
+    rating: 4.4,
+    reviewCount: 89,
+    annualFee: 65000,
+    feeRange: "₹50K - ₹80K",
+    address: "Green Park Extension",
+    city: "New Delhi",
+    distance: 2.1,
+    lat: 28.5600,
+    lng: 77.2100,
+    images: [
+      "https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=800",
+      "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=800",
+      "https://images.unsplash.com/photo-1544776193-352d25ca82cd?w=800"
+    ],
+    hasHostel: false,
+    hasTransport: true,
+    established: 2010,
+    studentCount: 450,
+    teacherRatio: "1:10",
+    grades: "Play Group - KG",
+    classLevels: ["Play School"],
+    amenities: ["Play Area", "Sandpit", "Art Room", "Activity Zone", "Rest Room", "Garden"],
+    highlights: ["Montessori Approach", "Safe Environment", "Qualified Teachers"],
+    description: "A nurturing environment for early learners focusing on play-based learning and holistic child development.",
+    timings: "9:00 AM - 12:30 PM",
+    contactPhone: "+91 98765 43216",
+    contactEmail: "info@littleangels.edu.in"
+  },
+  {
+    id: "8",
+    name: "Bright Future High School",
+    slug: "bright-future-high-school",
+    tagline: "Preparing Leaders for Tomorrow",
+    board: "State Board",
+    rating: 4.0,
+    reviewCount: 156,
+    annualFee: 85000,
+    feeRange: "₹70K - ₹1L",
+    address: "Lajpat Nagar",
+    city: "New Delhi",
+    distance: 3.8,
+    lat: 28.5700,
+    lng: 77.2400,
+    images: [
+      "https://images.unsplash.com/photo-1562774053-701939374585?w=800",
+      "https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=800",
+      "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800"
+    ],
+    hasHostel: false,
+    hasTransport: true,
+    established: 1995,
+    studentCount: 1200,
+    teacherRatio: "1:30",
+    grades: "IX - XII",
+    classLevels: ["High School"],
+    amenities: ["Science Labs", "Computer Lab", "Library", "Sports Ground"],
+    highlights: ["Board Exam Focus", "Career Counseling", "Affordable Fees"],
+    description: "Focused on providing quality high school education with emphasis on board exam preparation and career guidance.",
+    timings: "7:30 AM - 2:00 PM",
+    contactPhone: "+91 98765 43217",
+    contactEmail: "info@brightfuture.edu.in"
   }
 ];
 
 export const boards = ["All", "CBSE", "ICSE", "IB", "State Board"];
 export const feeRanges = ["All", "Under ₹1L", "₹1L - ₹2L", "₹2L - ₹3L", "Above ₹3L"];
+export const classLevels: ClassLevel[] = ["Play School", "Primary", "Middle", "High School"];
 
 export const getSchoolBySlug = (slug: string): School | undefined => {
   return schools.find(school => school.slug === slug);
+};
+
+export const getPopularSchools = (): School[] => {
+  return schools.filter(school => school.isPopular);
+};
+
+export const getNearbySchools = (): School[] => {
+  return [...schools].sort((a, b) => a.distance - b.distance).slice(0, 4);
 };
 
 export const filterSchools = (filters: {
@@ -242,6 +332,7 @@ export const filterSchools = (filters: {
   hasHostel?: boolean;
   hasTransport?: boolean;
   searchQuery?: string;
+  classLevel?: string;
 }): School[] => {
   return schools.filter(school => {
     if (filters.board && filters.board !== "All" && school.board !== filters.board) {
@@ -263,6 +354,12 @@ export const filterSchools = (filters: {
         case "Above ₹3L":
           if (fee <= 300000) return false;
           break;
+      }
+    }
+    
+    if (filters.classLevel && filters.classLevel !== "All") {
+      if (!school.classLevels.includes(filters.classLevel as ClassLevel)) {
+        return false;
       }
     }
     

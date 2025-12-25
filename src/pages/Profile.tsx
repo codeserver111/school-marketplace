@@ -9,18 +9,22 @@ import {
   HelpCircle, 
   LogOut,
   ChevronRight,
-  Edit2
+  Edit2,
+  Heart,
+  MessageSquare,
+  Calendar
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
 import LocationHeader from "@/components/LocationHeader";
 import BottomNavigation from "@/components/BottomNavigation";
-import EnquiryForm from "@/components/EnquiryForm";
 import { toast } from "sonner";
+import { useUser } from "@/contexts/UserContext";
+import { Link } from "react-router-dom";
 
 const Profile = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { isLoggedIn, isGuest, user, login, logout, continueAsGuest, savedSchools } = useUser();
   const [isLoginOpen, setIsLoginOpen] = useState(false);
 
   const menuItems = [
@@ -28,6 +32,22 @@ const Profile = () => {
     { icon: Shield, label: "Privacy Settings" },
     { icon: HelpCircle, label: "Help & Support" },
   ];
+
+  const handleLogout = () => {
+    logout();
+    toast.success("Logged out successfully");
+  };
+
+  const handleLogin = (phone: string) => {
+    login(phone);
+    setIsLoginOpen(false);
+    toast.success("Login successful!");
+  };
+
+  const handleContinueAsGuest = () => {
+    continueAsGuest();
+    toast.success("Continuing as guest");
+  };
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -46,7 +66,7 @@ const Profile = () => {
                   <User className="w-8 h-8 text-primary" />
                 </div>
                 <div className="flex-1">
-                  <h2 className="text-xl font-bold text-foreground">Rahul Sharma</h2>
+                  <h2 className="text-xl font-bold text-foreground">{user?.name}</h2>
                   <p className="text-muted-foreground text-sm">Parent</p>
                 </div>
                 <Button variant="ghost" size="icon">
@@ -57,24 +77,26 @@ const Profile = () => {
               <div className="mt-6 space-y-3">
                 <div className="flex items-center gap-3 text-muted-foreground">
                   <Phone className="w-4 h-4" />
-                  <span className="text-sm">+91 98765 43210</span>
+                  <span className="text-sm">{user?.phone}</span>
                 </div>
-                <div className="flex items-center gap-3 text-muted-foreground">
-                  <Mail className="w-4 h-4" />
-                  <span className="text-sm">rahul.sharma@email.com</span>
-                </div>
+                {user?.email && (
+                  <div className="flex items-center gap-3 text-muted-foreground">
+                    <Mail className="w-4 h-4" />
+                    <span className="text-sm">{user.email}</span>
+                  </div>
+                )}
               </div>
             </div>
 
             {/* Stats */}
             <div className="grid grid-cols-3 gap-3 mb-6">
+              <Link to="/saved" className="bg-card rounded-xl p-4 shadow-card text-center hover:shadow-card-hover transition-shadow">
+                <p className="text-2xl font-bold text-primary">{savedSchools.length}</p>
+                <p className="text-xs text-muted-foreground">Saved</p>
+              </Link>
               <div className="bg-card rounded-xl p-4 shadow-card text-center">
                 <p className="text-2xl font-bold text-primary">5</p>
                 <p className="text-xs text-muted-foreground">Enquiries</p>
-              </div>
-              <div className="bg-card rounded-xl p-4 shadow-card text-center">
-                <p className="text-2xl font-bold text-primary">12</p>
-                <p className="text-xs text-muted-foreground">Saved</p>
               </div>
               <div className="bg-card rounded-xl p-4 shadow-card text-center">
                 <p className="text-2xl font-bold text-primary">3</p>
@@ -109,10 +131,7 @@ const Profile = () => {
             <Button
               variant="outline"
               className="w-full gap-2 text-destructive hover:text-destructive"
-              onClick={() => {
-                setIsLoggedIn(false);
-                toast.success("Logged out successfully");
-              }}
+              onClick={handleLogout}
             >
               <LogOut className="w-4 h-4" />
               Logout
@@ -122,7 +141,7 @@ const Profile = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-center py-12"
+            className="text-center py-8"
           >
             <div className="w-20 h-20 bg-primary-light rounded-full flex items-center justify-center mx-auto mb-6">
               <User className="w-10 h-10 text-primary" />
@@ -134,38 +153,75 @@ const Profile = () => {
               Sign in to save schools, track enquiries, and get personalized recommendations
             </p>
 
-            <Sheet open={isLoginOpen} onOpenChange={setIsLoginOpen}>
-              <SheetTrigger asChild>
-                <Button variant="hero" size="lg" className="w-full max-w-xs">
-                  Login / Sign Up
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="bottom" className="rounded-t-3xl">
-                <LoginForm 
-                  onSuccess={() => {
-                    setIsLoggedIn(true);
-                    setIsLoginOpen(false);
-                  }} 
-                />
-              </SheetContent>
-            </Sheet>
+            <div className="space-y-3 max-w-xs mx-auto">
+              <Sheet open={isLoginOpen} onOpenChange={setIsLoginOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="hero" size="lg" className="w-full">
+                    Login / Sign Up
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="bottom" className="rounded-t-3xl">
+                  <LoginForm onSuccess={handleLogin} />
+                </SheetContent>
+              </Sheet>
 
-            <div className="mt-8 pt-8 border-t border-border">
-              <h3 className="font-semibold text-foreground mb-4">Continue as Guest</h3>
-              <div className="space-y-2">
-                {menuItems.slice(1).map((item, index) => (
-                  <button
-                    key={index}
-                    className="w-full flex items-center justify-between p-4 bg-card rounded-xl shadow-card hover:shadow-card-hover transition-shadow"
-                  >
-                    <div className="flex items-center gap-3">
-                      <item.icon className="w-5 h-5 text-muted-foreground" />
-                      <span className="font-medium text-foreground">{item.label}</span>
-                    </div>
-                    <ChevronRight className="w-5 h-5 text-muted-foreground" />
-                  </button>
-                ))}
+              {!isGuest && (
+                <Button 
+                  variant="outline" 
+                  size="lg" 
+                  className="w-full"
+                  onClick={handleContinueAsGuest}
+                >
+                  Continue as Guest
+                </Button>
+              )}
+            </div>
+
+            {isGuest && (
+              <div className="mt-8 pt-8 border-t border-border">
+                <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground mb-4">
+                  <span className="bg-success/20 text-success px-2 py-0.5 rounded text-xs font-medium">
+                    Guest Mode
+                  </span>
+                </div>
+                <p className="text-sm text-muted-foreground mb-4">
+                  You can browse schools and save favorites. Login for full features.
+                </p>
               </div>
+            )}
+
+            {/* Quick Actions for Guests */}
+            <div className="mt-8 pt-8 border-t border-border">
+              <h3 className="font-semibold text-foreground mb-4">Quick Actions</h3>
+              <div className="grid grid-cols-2 gap-3">
+                <Link to="/schools" className="bg-card rounded-xl p-4 shadow-card hover:shadow-card-hover transition-shadow text-center">
+                  <div className="w-10 h-10 bg-primary-light rounded-full flex items-center justify-center mx-auto mb-2">
+                    <MessageSquare className="w-5 h-5 text-primary" />
+                  </div>
+                  <p className="text-sm font-medium text-foreground">Browse Schools</p>
+                </Link>
+                <Link to="/saved" className="bg-card rounded-xl p-4 shadow-card hover:shadow-card-hover transition-shadow text-center">
+                  <div className="w-10 h-10 bg-accent/20 rounded-full flex items-center justify-center mx-auto mb-2">
+                    <Heart className="w-5 h-5 text-accent" />
+                  </div>
+                  <p className="text-sm font-medium text-foreground">Saved ({savedSchools.length})</p>
+                </Link>
+              </div>
+            </div>
+
+            <div className="mt-6 space-y-2">
+              {menuItems.slice(1).map((item, index) => (
+                <button
+                  key={index}
+                  className="w-full flex items-center justify-between p-4 bg-card rounded-xl shadow-card hover:shadow-card-hover transition-shadow"
+                >
+                  <div className="flex items-center gap-3">
+                    <item.icon className="w-5 h-5 text-muted-foreground" />
+                    <span className="font-medium text-foreground">{item.label}</span>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-muted-foreground" />
+                </button>
+              ))}
             </div>
           </motion.div>
         )}
@@ -177,7 +233,7 @@ const Profile = () => {
 };
 
 // Login Form Component
-const LoginForm = ({ onSuccess }: { onSuccess: () => void }) => {
+const LoginForm = ({ onSuccess }: { onSuccess: (phone: string) => void }) => {
   const [step, setStep] = useState<"phone" | "otp">("phone");
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
@@ -203,8 +259,7 @@ const LoginForm = ({ onSuccess }: { onSuccess: () => void }) => {
     setIsLoading(true);
     await new Promise((resolve) => setTimeout(resolve, 1000));
     setIsLoading(false);
-    toast.success("Login successful!");
-    onSuccess();
+    onSuccess("+91 " + phone);
   };
 
   return (
