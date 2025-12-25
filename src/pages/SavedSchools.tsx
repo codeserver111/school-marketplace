@@ -4,10 +4,11 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import LocationHeader from "@/components/LocationHeader";
 import BottomNavigation from "@/components/BottomNavigation";
+import SchoolCard from "@/components/SchoolCard";
+import { useUser } from "@/contexts/UserContext";
 
 const SavedSchools = () => {
-  // In a real app, this would come from a backend or local storage
-  const savedSchools: any[] = [];
+  const { savedSchools } = useUser();
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -15,7 +16,12 @@ const SavedSchools = () => {
 
       <div className="px-4 py-6">
         <h1 className="text-2xl font-bold text-foreground mb-2">Saved Schools</h1>
-        <p className="text-muted-foreground">Schools you've bookmarked for later</p>
+        <p className="text-muted-foreground">
+          {savedSchools.length > 0 
+            ? `${savedSchools.length} school${savedSchools.length > 1 ? 's' : ''} saved`
+            : "Schools you've bookmarked for later"
+          }
+        </p>
       </div>
 
       {savedSchools.length === 0 ? (
@@ -39,7 +45,9 @@ const SavedSchools = () => {
         </motion.div>
       ) : (
         <div className="px-4 space-y-4">
-          {/* Saved schools would be rendered here */}
+          {savedSchools.map((school, index) => (
+            <SchoolCard key={school.id} school={school} index={index} />
+          ))}
         </div>
       )}
 
