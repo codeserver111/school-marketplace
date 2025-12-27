@@ -132,6 +132,83 @@ export const reviews: Review[] = [
     verified: true,
     childGrade: "Grade 8",
     helpful: 17
+  },
+  {
+    id: "r12",
+    schoolId: "9",
+    parentName: "Arjun Kapoor",
+    rating: 5,
+    comment: "IB curriculum is challenging but rewarding. The international exposure my son gets is unparalleled.",
+    date: "2024-12-20",
+    verified: true,
+    childGrade: "Grade 10",
+    helpful: 34
+  },
+  {
+    id: "r13",
+    schoolId: "9",
+    parentName: "Sarah Thomas",
+    rating: 4,
+    comment: "Excellent faculty with international experience. The fees are high but the quality matches it.",
+    date: "2024-11-10",
+    verified: false,
+    childGrade: "Grade 7",
+    helpful: 19
+  },
+  {
+    id: "r14",
+    schoolId: "10",
+    parentName: "Deepika Malhotra",
+    rating: 5,
+    comment: "Perfect for toddlers! The teachers are so caring and patient. My daughter loves going to school every day.",
+    date: "2024-12-22",
+    verified: true,
+    childGrade: "Nursery",
+    helpful: 28
+  },
+  {
+    id: "r15",
+    schoolId: "12",
+    parentName: "Michael D'Souza",
+    rating: 5,
+    comment: "Strong values and excellent academics. The school has been in our family for three generations.",
+    date: "2024-10-15",
+    verified: true,
+    childGrade: "Grade 6",
+    helpful: 42
+  },
+  {
+    id: "r16",
+    schoolId: "14",
+    parentName: "Ravi Agarwal",
+    rating: 5,
+    comment: "My son learned Python programming in Grade 4! The tech-focused curriculum is amazing for future-ready education.",
+    date: "2024-12-05",
+    verified: true,
+    childGrade: "Grade 5",
+    helpful: 51
+  },
+  {
+    id: "r17",
+    schoolId: "15",
+    parentName: "Nandini Shah",
+    rating: 5,
+    comment: "Small class sizes mean personalized attention. My child has blossomed in this nurturing environment.",
+    date: "2024-11-25",
+    verified: true,
+    childGrade: "Grade 2",
+    helpful: 23
+  },
+  {
+    id: "r18",
+    schoolId: "1",
+    parentName: "Guest User",
+    rating: 3,
+    comment: "Good school but the admission process was quite lengthy. Wish it was more streamlined.",
+    date: "2024-08-10",
+    verified: false,
+    childGrade: "Grade 1",
+    helpful: 5
   }
 ];
 

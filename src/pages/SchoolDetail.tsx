@@ -14,7 +14,8 @@ import {
   Calendar,
   Bus,
   Home,
-  Award
+  Award,
+  CalendarCheck
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -22,6 +23,9 @@ import ImageGallery from "@/components/ImageGallery";
 import AmenityBadge from "@/components/AmenityBadge";
 import EnquiryForm from "@/components/EnquiryForm";
 import ReviewSection from "@/components/ReviewSection";
+import VisitBookingForm from "@/components/VisitBookingForm";
+import AdmissionDeadlines from "@/components/AdmissionDeadlines";
+import FeeCalculator from "@/components/FeeCalculator";
 import { getSchoolBySlug } from "@/data/mockSchools";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -32,6 +36,7 @@ const SchoolDetail = () => {
   const navigate = useNavigate();
   const [isSaved, setIsSaved] = useState(false);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [isVisitSheetOpen, setIsVisitSheetOpen] = useState(false);
 
   const school = getSchoolBySlug(slug || "");
 
@@ -226,6 +231,16 @@ const SchoolDetail = () => {
           <p className="text-muted-foreground leading-relaxed">{school.description}</p>
         </div>
 
+        {/* Fee Calculator */}
+        <FeeCalculator 
+          baseFee={school.annualFee} 
+          hasTransport={school.hasTransport} 
+          hasHostel={school.hasHostel} 
+        />
+
+        {/* Admission Deadlines */}
+        <AdmissionDeadlines schoolName={school.name} />
+
         {/* Amenities */}
         <div className="mb-6">
           <h2 className="text-lg font-semibold text-foreground mb-3">Amenities</h2>
@@ -278,13 +293,21 @@ const SchoolDetail = () => {
         transition={{ delay: 0.3 }}
         className="fixed bottom-0 left-0 right-0 bg-card border-t border-border p-4 safe-bottom z-40"
       >
-        <div className="flex gap-3 max-w-lg mx-auto">
-          <a href={`tel:${school.contactPhone}`} className="flex-1">
-            <Button variant="outline" className="w-full gap-2">
-              <Phone className="w-4 h-4" />
-              Call Now
-            </Button>
-          </a>
+        <div className="flex gap-2 max-w-lg mx-auto">
+          <Sheet open={isVisitSheetOpen} onOpenChange={setIsVisitSheetOpen}>
+            <SheetTrigger asChild>
+              <Button variant="outline" className="flex-1 gap-2">
+                <CalendarCheck className="w-4 h-4" />
+                Book Visit
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="bottom" className="rounded-t-3xl">
+              <VisitBookingForm 
+                schoolName={school.name} 
+                onClose={() => setIsVisitSheetOpen(false)} 
+              />
+            </SheetContent>
+          </Sheet>
           <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
             <SheetTrigger asChild>
               <Button variant="hero" className="flex-1 gap-2">
