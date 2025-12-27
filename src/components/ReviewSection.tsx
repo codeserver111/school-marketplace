@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, ChevronDown, ChevronUp } from "lucide-react";
+import { Star, ChevronDown, ChevronUp, ArrowUpDown, Filter, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import ReviewCard from "./ReviewCard";
 import WriteReviewForm from "./WriteReviewForm";
 import { 
@@ -16,21 +19,48 @@ interface ReviewSectionProps {
   schoolName: string;
 }
 
+type SortOption = "recent" | "highest" | "lowest" | "helpful";
+
 const ReviewSection = ({ schoolId, schoolName }: ReviewSectionProps) => {
   const [showAllReviews, setShowAllReviews] = useState(false);
   const [showWriteReview, setShowWriteReview] = useState(false);
   const [reviews, setReviews] = useState(getReviewsBySchoolId(schoolId));
+  const [sortBy, setSortBy] = useState<SortOption>("recent");
+  const [showVerifiedOnly, setShowVerifiedOnly] = useState(false);
   
   const { average, count } = getAverageRating(schoolId);
   const distribution = getRatingDistribution(schoolId);
   
-  const displayedReviews = showAllReviews ? reviews : reviews.slice(0, 2);
+  const sortedAndFilteredReviews = useMemo(() => {
+    let filtered = showVerifiedOnly 
+      ? reviews.filter(r => r.verified) 
+      : reviews;
+    
+    return [...filtered].sort((a, b) => {
+      switch (sortBy) {
+        case "recent":
+          return new Date(b.date).getTime() - new Date(a.date).getTime();
+        case "highest":
+          return b.rating - a.rating;
+        case "lowest":
+          return a.rating - b.rating;
+        case "helpful":
+          return b.helpful - a.helpful;
+        default:
+          return 0;
+      }
+    });
+  }, [reviews, sortBy, showVerifiedOnly]);
+  
+  const displayedReviews = showAllReviews ? sortedAndFilteredReviews : sortedAndFilteredReviews.slice(0, 2);
   const maxCount = Math.max(...Object.values(distribution), 1);
 
   const handleReviewAdded = () => {
     setReviews(getReviewsBySchoolId(schoolId));
     setShowWriteReview(false);
   };
+
+  const verifiedCount = reviews.filter(r => r.verified).length;
 
   return (
     <div className="mb-6">
@@ -89,6 +119,36 @@ const ReviewSection = ({ schoolId, schoolName }: ReviewSectionProps) => {
         </div>
       </motion.div>
 
+      {/* Sort & Filter Controls */}
+      <div className="flex flex-wrap items-center gap-3 mb-4">
+        <div className="flex items-center gap-2">
+          <ArrowUpDown className="w-4 h-4 text-muted-foreground" />
+          <Select value={sortBy} onValueChange={(value: SortOption) => setSortBy(value)}>
+            <SelectTrigger className="w-[140px] h-9">
+              <SelectValue placeholder="Sort by" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="recent">Most Recent</SelectItem>
+              <SelectItem value="highest">Highest Rated</SelectItem>
+              <SelectItem value="lowest">Lowest Rated</SelectItem>
+              <SelectItem value="helpful">Most Helpful</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        
+        <div className="flex items-center gap-2 ml-auto">
+          <Switch 
+            id="verified-filter" 
+            checked={showVerifiedOnly}
+            onCheckedChange={setShowVerifiedOnly}
+          />
+          <Label htmlFor="verified-filter" className="text-sm flex items-center gap-1 cursor-pointer">
+            <CheckCircle className="w-4 h-4 text-success" />
+            Verified only ({verifiedCount})
+          </Label>
+        </div>
+      </div>
+
       {/* Write Review Form */}
       <AnimatePresence>
         {showWriteReview && (
@@ -102,13 +162,13 @@ const ReviewSection = ({ schoolId, schoolName }: ReviewSectionProps) => {
       </AnimatePresence>
 
       {/* Reviews List */}
-      {reviews.length > 0 ? (
+      {sortedAndFilteredReviews.length > 0 ? (
         <div className="space-y-3">
           {displayedReviews.map((review, index) => (
             <ReviewCard key={review.id} review={review} index={index} />
           ))}
           
-          {reviews.length > 2 && (
+          {sortedAndFilteredReviews.length > 2 && (
             <Button
               variant="ghost"
               onClick={() => setShowAllReviews(!showAllReviews)}
@@ -120,7 +180,7 @@ const ReviewSection = ({ schoolId, schoolName }: ReviewSectionProps) => {
                 </>
               ) : (
                 <>
-                  Show All {reviews.length} Reviews <ChevronDown className="w-4 h-4" />
+                  Show All {sortedAndFilteredReviews.length} Reviews <ChevronDown className="w-4 h-4" />
                 </>
               )}
             </Button>
@@ -128,7 +188,7 @@ const ReviewSection = ({ schoolId, schoolName }: ReviewSectionProps) => {
         </div>
       ) : (
         <div className="text-center py-8 text-muted-foreground">
-          <p>No reviews yet. Be the first to review!</p>
+          <p>{showVerifiedOnly ? "No verified reviews yet." : "No reviews yet. Be the first to review!"}</p>
         </div>
       )}
     </div>
