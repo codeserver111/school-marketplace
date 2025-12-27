@@ -26,6 +26,7 @@ import ReviewSection from "@/components/ReviewSection";
 import VisitBookingForm from "@/components/VisitBookingForm";
 import AdmissionDeadlines from "@/components/AdmissionDeadlines";
 import FeeCalculator from "@/components/FeeCalculator";
+import SchoolAchievements from "@/components/SchoolAchievements";
 import { getSchoolBySlug } from "@/data/mockSchools";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -230,6 +231,9 @@ const SchoolDetail = () => {
           <h2 className="text-lg font-semibold text-foreground mb-3">About</h2>
           <p className="text-muted-foreground leading-relaxed">{school.description}</p>
         </div>
+
+        {/* Achievements & Results */}
+        <SchoolAchievements schoolName={school.name} />
 
         {/* Fee Calculator */}
         <FeeCalculator 
