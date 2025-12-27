@@ -27,6 +27,8 @@ import VisitBookingForm from "@/components/VisitBookingForm";
 import AdmissionDeadlines from "@/components/AdmissionDeadlines";
 import FeeCalculator from "@/components/FeeCalculator";
 import SchoolAchievements from "@/components/SchoolAchievements";
+import VirtualTour from "@/components/VirtualTour";
+import SchoolComparisonChart from "@/components/SchoolComparisonChart";
 import { getSchoolBySlug } from "@/data/mockSchools";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -234,6 +236,17 @@ const SchoolDetail = () => {
 
         {/* Achievements & Results */}
         <SchoolAchievements schoolName={school.name} />
+
+        {/* Virtual Campus Tour */}
+        <VirtualTour schoolName={school.name} />
+
+        {/* Comparison Chart */}
+        <SchoolComparisonChart 
+          schoolName={school.name}
+          schoolRating={school.rating}
+          schoolFee={school.annualFee}
+          teacherRatio={school.teacherRatio}
+        />
 
         {/* Fee Calculator */}
         <FeeCalculator 

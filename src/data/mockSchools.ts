@@ -572,6 +572,7 @@ export const filterSchools = (filters: {
   hasTransport?: boolean;
   searchQuery?: string;
   classLevel?: string;
+  maxDistance?: number;
 }): School[] => {
   return schools.filter(school => {
     if (filters.board && filters.board !== "All" && school.board !== filters.board) {
@@ -598,6 +599,13 @@ export const filterSchools = (filters: {
     
     if (filters.classLevel && filters.classLevel !== "All") {
       if (!school.classLevels.includes(filters.classLevel as ClassLevel)) {
+        return false;
+      }
+    }
+    
+    // Distance filter
+    if (filters.maxDistance && filters.maxDistance < 50) {
+      if (school.distance > filters.maxDistance) {
         return false;
       }
     }
