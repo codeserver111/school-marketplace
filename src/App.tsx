@@ -13,6 +13,7 @@ import MapView from "./pages/MapView";
 import SavedSchools from "./pages/SavedSchools";
 import Profile from "./pages/Profile";
 import Compare from "./pages/Compare";
+import AdmissionFlow from "./pages/AdmissionFlow";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient({
@@ -39,6 +40,7 @@ const App = () => (
               <Route path="/saved" element={<SavedSchools />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/compare" element={<Compare />} />
+              <Route path="/admission" element={<AdmissionFlow />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             <ComparisonBar />
