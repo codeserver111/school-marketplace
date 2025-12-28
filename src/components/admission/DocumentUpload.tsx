@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { 
   Upload, 
   FileText, 
@@ -10,7 +10,11 @@ import {
   Camera,
   Trash2,
   Eye,
-  Sparkles
+  Sparkles,
+  Shield,
+  FileCheck,
+  ImageIcon,
+  IdCard
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -43,6 +47,15 @@ interface DocumentUploadProps {
   onContinue: () => void;
 }
 
+const docIcons: Record<DocumentType, React.ReactNode> = {
+  photo: <Camera className="w-5 h-5" />,
+  parent_id: <IdCard className="w-5 h-5" />,
+  birth_certificate: <FileCheck className="w-5 h-5" />,
+  transfer_certificate: <FileText className="w-5 h-5" />,
+  marksheet: <FileText className="w-5 h-5" />,
+  address_proof: <FileText className="w-5 h-5" />,
+};
+
 export default function DocumentUpload({
   childProfile,
   documents,
@@ -59,6 +72,8 @@ export default function DocumentUpload({
   const [activeDocType, setActiveDocType] = useState<DocumentType | null>(null);
 
   const requiredDocs = getRequiredDocuments();
+  const mandatoryDocs = requiredDocs.filter(d => d.required);
+  const optionalDocs = requiredDocs.filter(d => !d.required);
 
   const getDocumentStatus = (docType: DocumentType) => {
     return documents.find(d => d.type === docType);
@@ -110,8 +125,10 @@ export default function DocumentUpload({
 
       // Show result
       if (validation.isValid) {
-        toast.success("Document verified successfully!");
-        setExtractedDataDialog({ open: true, data: extractedData, docType });
+        toast.success("Document uploaded successfully!");
+        if (docType !== "photo" && docType !== "parent_id") {
+          setExtractedDataDialog({ open: true, data: extractedData, docType });
+        }
       } else {
         toast.warning("Document has mismatches. Please review.");
       }
@@ -155,26 +172,187 @@ export default function DocumentUpload({
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "verified":
-        return <Badge className="bg-success/10 text-success border-success/30">Verified</Badge>;
+        return <Badge className="bg-success/10 text-success border-success/30 text-xs">✓ Done</Badge>;
       case "mismatch":
-        return <Badge className="bg-accent/10 text-accent border-accent/30">Mismatch</Badge>;
+        return <Badge className="bg-accent/10 text-accent border-accent/30 text-xs">Review</Badge>;
       case "rejected":
-        return <Badge className="bg-destructive/10 text-destructive border-destructive/30">Rejected</Badge>;
+        return <Badge className="bg-destructive/10 text-destructive border-destructive/30 text-xs">Rejected</Badge>;
       case "pending":
-        return <Badge variant="secondary">Processing</Badge>;
+        return <Badge variant="secondary" className="text-xs">Processing</Badge>;
       default:
         return null;
     }
   };
 
-  const uploadedCount = documents.filter(d => d.status === "verified").length;
-  const requiredCount = requiredDocs.filter(d => d.required).length;
-  const allRequiredUploaded = requiredDocs
-    .filter(d => d.required)
-    .every(d => documents.find(doc => doc.type === d.type && doc.status === "verified"));
+  const uploadedRequiredCount = mandatoryDocs.filter(d => 
+    documents.find(doc => doc.type === d.type && (doc.status === "verified" || doc.status === "mismatch"))
+  ).length;
+  const uploadedOptionalCount = optionalDocs.filter(d => 
+    documents.find(doc => doc.type === d.type && (doc.status === "verified" || doc.status === "mismatch"))
+  ).length;
+  
+  const allRequiredUploaded = mandatoryDocs.every(d => 
+    documents.find(doc => doc.type === d.type && (doc.status === "verified" || doc.status === "mismatch"))
+  );
+
+  const renderDocCard = (doc: { type: DocumentType; label: string; required: boolean; description?: string }, isRequired: boolean) => {
+    const uploadedDoc = getDocumentStatus(doc.type);
+    const isProcessing = processingDoc === doc.type;
+
+    return (
+      <motion.div
+        key={doc.type}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.2 }}
+      >
+        <Card
+          className={cn(
+            "overflow-hidden transition-all border-2",
+            uploadedDoc?.status === "verified" && "border-success/50 bg-success/5",
+            uploadedDoc?.status === "mismatch" && "border-accent/50 bg-accent/5",
+            !uploadedDoc && isRequired && "border-primary/30 bg-primary/5",
+            !uploadedDoc && !isRequired && "border-border bg-card"
+          )}
+        >
+          <div className="p-4">
+            <div className="flex items-start gap-4">
+              {/* Icon */}
+              <div
+                className={cn(
+                  "w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors",
+                  uploadedDoc?.status === "verified" && "bg-success/20 text-success",
+                  uploadedDoc?.status === "mismatch" && "bg-accent/20 text-accent",
+                  !uploadedDoc && isRequired && "bg-primary/20 text-primary",
+                  !uploadedDoc && !isRequired && "bg-muted text-muted-foreground"
+                )}
+              >
+                {isProcessing ? (
+                  <Loader2 className="w-6 h-6 animate-spin" />
+                ) : uploadedDoc ? (
+                  getStatusIcon(uploadedDoc.status)
+                ) : (
+                  docIcons[doc.type]
+                )}
+              </div>
+
+              {/* Content */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <h3 className="font-semibold text-sm">{doc.label}</h3>
+                  {uploadedDoc && getStatusBadge(uploadedDoc.status)}
+                </div>
+                
+                {uploadedDoc ? (
+                  <p className="text-xs text-muted-foreground line-clamp-1">
+                    {uploadedDoc.fileName}
+                  </p>
+                ) : (
+                  <p className="text-xs text-muted-foreground">
+                    {doc.description || "JPG, PNG or PDF (max 5MB)"}
+                  </p>
+                )}
+
+                {/* Actions */}
+                <div className="flex items-center gap-2 mt-3">
+                  {uploadedDoc ? (
+                    <>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="h-8 text-xs"
+                        onClick={() => handleUploadClick(doc.type)}
+                      >
+                        <Upload className="w-3 h-3 mr-1" />
+                        Replace
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 text-xs text-destructive hover:text-destructive"
+                        onClick={() => handleRemoveDocument(doc.type)}
+                      >
+                        <Trash2 className="w-3 h-3 mr-1" />
+                        Remove
+                      </Button>
+                    </>
+                  ) : (
+                    <Button
+                      size="sm"
+                      variant={isRequired ? "default" : "outline"}
+                      className="h-8"
+                      onClick={() => handleUploadClick(doc.type)}
+                      disabled={isProcessing}
+                    >
+                      {isProcessing ? (
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      ) : (
+                        <Upload className="w-4 h-4 mr-2" />
+                      )}
+                      Upload
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Mismatch Warning */}
+            {uploadedDoc?.status === "mismatch" && uploadedDoc.mismatchDetails && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                className="mt-3 p-3 rounded-lg bg-accent/10 border border-accent/30"
+              >
+                <div className="flex items-start gap-2">
+                  <AlertTriangle className="w-4 h-4 text-accent flex-shrink-0 mt-0.5" />
+                  <div className="text-xs">
+                    <p className="font-medium text-accent">Data Mismatch</p>
+                    <p className="text-muted-foreground mt-0.5">
+                      {uploadedDoc.mismatchDetails}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Extracted Data Preview */}
+            {uploadedDoc?.status === "verified" && uploadedDoc.extractedData && 
+             Object.keys(uploadedDoc.extractedData).length > 0 && 
+             doc.type !== "photo" && doc.type !== "parent_id" && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                className="mt-3 p-3 rounded-lg bg-success/5 border border-success/20"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-xs">
+                    <Sparkles className="w-3 h-3 text-success" />
+                    <span className="text-success font-medium">AI extracted data</span>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-6 text-xs px-2"
+                    onClick={() => setExtractedDataDialog({
+                      open: true,
+                      data: uploadedDoc.extractedData!,
+                      docType: doc.type,
+                    })}
+                  >
+                    <Eye className="w-3 h-3 mr-1" />
+                    View
+                  </Button>
+                </div>
+              </motion.div>
+            )}
+          </div>
+        </Card>
+      </motion.div>
+    );
+  };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full bg-gradient-to-b from-background to-muted/30">
       {/* Hidden file input */}
       <input
         ref={fileInputRef}
@@ -185,15 +363,15 @@ export default function DocumentUpload({
       />
 
       {/* Header */}
-      <div className="p-4 border-b bg-card">
-        <div className="flex items-center gap-3 mb-3">
-          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-            <FileText className="w-5 h-5 text-primary" />
+      <div className="p-4 border-b bg-card/80 backdrop-blur-sm">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center shadow-lg">
+            <FileText className="w-6 h-6 text-primary-foreground" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold">Document Upload</h2>
+            <h2 className="text-xl font-bold">Upload Documents</h2>
             <p className="text-sm text-muted-foreground">
-              Upload required documents for verification
+              Only 2 documents required to proceed
             </p>
           </div>
         </div>
@@ -201,187 +379,79 @@ export default function DocumentUpload({
         {/* Progress */}
         <div className="space-y-2">
           <div className="flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">Progress</span>
-            <span className="font-medium">{uploadedCount} of {requiredCount} required</span>
+            <span className="text-muted-foreground">Required documents</span>
+            <span className="font-semibold text-primary">{uploadedRequiredCount} of {mandatoryDocs.length}</span>
           </div>
-          <Progress value={(uploadedCount / requiredCount) * 100} className="h-2" />
-        </div>
-      </div>
-
-      {/* OCR Info Banner */}
-      <div className="mx-4 mt-4 p-3 rounded-lg bg-primary/5 border border-primary/20">
-        <div className="flex items-start gap-2">
-          <Sparkles className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-          <div className="text-sm">
-            <p className="font-medium text-primary">Smart Document Scanning</p>
-            <p className="text-muted-foreground mt-0.5">
-              Our AI automatically extracts and validates information from your documents
-            </p>
-          </div>
+          <Progress value={(uploadedRequiredCount / mandatoryDocs.length) * 100} className="h-2" />
         </div>
       </div>
 
       {/* Documents List */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3">
-        {requiredDocs.map((doc) => {
-          const uploadedDoc = getDocumentStatus(doc.type);
-          const isProcessing = processingDoc === doc.type;
+      <div className="flex-1 overflow-y-auto p-4 space-y-6">
+        {/* Required Section */}
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <Shield className="w-4 h-4 text-primary" />
+            <h3 className="font-semibold text-sm text-primary">Required Documents</h3>
+            <Badge variant="default" className="text-xs">Mandatory</Badge>
+          </div>
+          <div className="space-y-3">
+            {mandatoryDocs.map((doc) => renderDocCard(doc, true))}
+          </div>
+        </div>
 
-          return (
-            <motion.div
-              key={doc.type}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-            >
-              <Card
-                className={cn(
-                  "overflow-hidden transition-all",
-                  uploadedDoc?.status === "verified" && "border-success/50",
-                  uploadedDoc?.status === "mismatch" && "border-accent/50"
-                )}
-              >
-                <div className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div
-                        className={cn(
-                          "w-12 h-12 rounded-lg flex items-center justify-center",
-                          uploadedDoc ? "bg-muted" : "bg-primary/5 border-2 border-dashed border-primary/30"
-                        )}
-                      >
-                        {isProcessing ? (
-                          <Loader2 className="w-5 h-5 text-primary animate-spin" />
-                        ) : uploadedDoc ? (
-                          getStatusIcon(uploadedDoc.status)
-                        ) : (
-                          <FileText className="w-5 h-5 text-primary/50" />
-                        )}
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <h3 className="font-medium text-sm">{doc.label}</h3>
-                          {doc.required && (
-                            <Badge variant="outline" className="text-xs py-0">
-                              Required
-                            </Badge>
-                          )}
-                        </div>
-                        {uploadedDoc ? (
-                          <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">
-                            {uploadedDoc.fileName}
-                          </p>
-                        ) : (
-                          <p className="text-xs text-muted-foreground mt-0.5">
-                            JPG, PNG or PDF (max 5MB)
-                          </p>
-                        )}
-                      </div>
-                    </div>
+        {/* Optional Section */}
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <FileText className="w-4 h-4 text-muted-foreground" />
+            <h3 className="font-medium text-sm text-muted-foreground">Optional Documents</h3>
+            <Badge variant="outline" className="text-xs">Recommended</Badge>
+          </div>
+          <p className="text-xs text-muted-foreground -mt-1 mb-2">
+            Upload these for better school matching and faster verification
+          </p>
+          <div className="space-y-3">
+            {optionalDocs.map((doc) => renderDocCard(doc, false))}
+          </div>
+        </div>
 
-                    {/* Actions */}
-                    <div className="flex items-center gap-2">
-                      {uploadedDoc ? (
-                        <>
-                          {getStatusBadge(uploadedDoc.status)}
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8"
-                            onClick={() => handleRemoveDocument(doc.type)}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </>
-                      ) : (
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleUploadClick(doc.type)}
-                          disabled={isProcessing}
-                        >
-                          {isProcessing ? (
-                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                          ) : (
-                            <Upload className="w-4 h-4 mr-2" />
-                          )}
-                          Upload
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Mismatch Warning */}
-                  {uploadedDoc?.status === "mismatch" && uploadedDoc.mismatchDetails && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      className="mt-3 p-3 rounded-lg bg-accent/10 border border-accent/30"
-                    >
-                      <div className="flex items-start gap-2">
-                        <AlertTriangle className="w-4 h-4 text-accent flex-shrink-0 mt-0.5" />
-                        <div className="text-sm">
-                          <p className="font-medium text-accent">Data Mismatch Detected</p>
-                          <p className="text-muted-foreground mt-0.5">
-                            {uploadedDoc.mismatchDetails}
-                          </p>
-                          <Button
-                            variant="link"
-                            size="sm"
-                            className="p-0 h-auto mt-1 text-accent"
-                            onClick={() => handleUploadClick(doc.type)}
-                          >
-                            Re-upload Document
-                          </Button>
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-
-                  {/* Extracted Data Preview */}
-                  {uploadedDoc?.status === "verified" && uploadedDoc.extractedData && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      className="mt-3 p-3 rounded-lg bg-success/5 border border-success/20"
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2 text-sm">
-                          <CheckCircle className="w-4 h-4 text-success" />
-                          <span className="text-success font-medium">Data Extracted</span>
-                        </div>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-7 text-xs"
-                          onClick={() => setExtractedDataDialog({
-                            open: true,
-                            data: uploadedDoc.extractedData!,
-                            docType: doc.type,
-                          })}
-                        >
-                          <Eye className="w-3 h-3 mr-1" />
-                          View
-                        </Button>
-                      </div>
-                    </motion.div>
-                  )}
-                </div>
-              </Card>
-            </motion.div>
-          );
-        })}
+        {/* Optional count indicator */}
+        {uploadedOptionalCount > 0 && (
+          <div className="text-center py-2">
+            <Badge variant="secondary" className="text-xs">
+              <CheckCircle className="w-3 h-3 mr-1" />
+              {uploadedOptionalCount} optional document{uploadedOptionalCount > 1 ? 's' : ''} uploaded
+            </Badge>
+          </div>
+        )}
       </div>
 
       {/* Continue Button */}
-      <div className="p-4 border-t bg-card">
-        <Button
-          className="w-full"
-          size="lg"
-          onClick={onContinue}
-          disabled={!allRequiredUploaded}
-        >
-          {allRequiredUploaded ? "Continue to Review" : `Upload ${requiredCount - uploadedCount} more required document${requiredCount - uploadedCount !== 1 ? "s" : ""}`}
-        </Button>
+      <div className="p-4 border-t bg-card/80 backdrop-blur-sm">
+        {allRequiredUploaded ? (
+          <Button
+            className="w-full h-12 text-base font-semibold"
+            size="lg"
+            onClick={onContinue}
+          >
+            <CheckCircle className="w-5 h-5 mr-2" />
+            Continue to Review
+          </Button>
+        ) : (
+          <div className="space-y-2">
+            <Button
+              className="w-full h-12"
+              size="lg"
+              variant="outline"
+              disabled
+            >
+              Upload {mandatoryDocs.length - uploadedRequiredCount} required document{mandatoryDocs.length - uploadedRequiredCount !== 1 ? 's' : ''} to continue
+            </Button>
+            <p className="text-xs text-center text-muted-foreground">
+              Only child's photo and parent ID are required
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Extracted Data Dialog */}
