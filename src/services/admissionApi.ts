@@ -313,13 +313,13 @@ export async function saveApplication(
 }
 
 // Get required documents list
-export function getRequiredDocuments(): { type: DocumentType; label: string; required: boolean }[] {
+export function getRequiredDocuments(): { type: DocumentType; label: string; required: boolean; description?: string }[] {
   return [
-    { type: "birth_certificate", label: "Birth Certificate", required: true },
-    { type: "transfer_certificate", label: "Transfer Certificate (TC)", required: false },
-    { type: "marksheet", label: "Previous Year Marksheet", required: false },
-    { type: "address_proof", label: "Address Proof", required: true },
-    { type: "photo", label: "Passport Size Photo", required: true },
-    { type: "parent_id", label: "Parent ID Proof", required: true },
+    { type: "photo", label: "Child's Passport Photo", required: true, description: "Recent passport-size photo of your child" },
+    { type: "parent_id", label: "Parent ID Proof", required: true, description: "Aadhaar, PAN, Passport or Voter ID" },
+    { type: "birth_certificate", label: "Birth Certificate", required: false, description: "Optional - Helps verify age automatically" },
+    { type: "transfer_certificate", label: "Transfer Certificate (TC)", required: false, description: "Optional - Required only for transfers" },
+    { type: "marksheet", label: "Previous Year Marksheet", required: false, description: "Optional - Improves school matching accuracy" },
+    { type: "address_proof", label: "Address Proof", required: false, description: "Optional - Utility bill or rent agreement" },
   ];
 }
