@@ -615,7 +615,7 @@ export const schools: School[] = [
 ];
 
 export const boards = ["All", "CBSE", "ICSE", "IB", "State Board"];
-export const feeRanges = ["All", "Under ₹1L", "₹1L - ₹2L", "₹2L - ₹3L", "Above ₹3L"];
+export const feeRanges = ["All", "Under ₹8K/month", "₹8K - ₹17K/month", "₹17K - ₹25K/month", "Above ₹25K/month"];
 export const classLevels: ClassLevel[] = ["Play School", "Primary", "Middle", "High School"];
 
 export const getSchoolBySlug = (slug: string): School | undefined => {

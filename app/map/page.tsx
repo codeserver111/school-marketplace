@@ -12,6 +12,18 @@ import { Input } from "@/components/ui/input";
 import BottomNavigation from "@/components/BottomNavigation";
 import { schools, School } from "@/data/mockSchools";
 
+// Utility function to format monthly fees
+const formatMonthlyFee = (annualAmount: number): string => {
+  const monthly = Math.round(annualAmount / 12);
+  if (monthly >= 100000) { // 1L and above
+    return `₹${(monthly / 100000).toFixed(1)}L`;
+  } else if (monthly >= 1000) { // 1K and above
+    return `₹${(monthly / 1000).toFixed(0)}K`;
+  } else {
+    return `₹${monthly.toLocaleString()}`;
+  }
+};
+
 // Demo token - in production, this should be stored securely
 const MAPBOX_TOKEN = "pk.eyJ1IjoibG92YWJsZWRlbW8iLCJhIjoiY2x4eGd6bnR2MDR1aDJqc2RzZ3Zja3B6MCJ9.demo";
 
@@ -192,7 +204,7 @@ export default function MapView() {
                 </p>
                 <div className="flex items-center justify-between mt-2">
                   <span className="text-primary font-semibold text-sm">
-                    {selectedSchool.feeRange}
+                    {formatMonthlyFee(selectedSchool.annualFee)}/month*
                   </span>
                   <span className="text-xs text-muted-foreground">
                     {selectedSchool.distance} km away

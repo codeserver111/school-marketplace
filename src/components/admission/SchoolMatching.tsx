@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { 
-  TrendingUp, 
-  TrendingDown, 
-  Minus, 
-  Check, 
-  X, 
+import { useRouter } from "next/navigation";
+import {
+  TrendingUp,
+  TrendingDown,
+  Minus,
+  Check,
+  X,
   AlertCircle,
   Star,
   MapPin,
@@ -13,7 +14,10 @@ import {
   GraduationCap,
   ChevronDown,
   ChevronUp,
-  Sparkles
+  Sparkles,
+  Heart,
+  Eye,
+  Bookmark
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -21,10 +25,23 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
+import { SchoolCardSkeleton } from "@/components/ui/skeleton";
 import { ChildProfile, SchoolMatch, MatchFactor } from "@/types/admission";
 import { getMatchedSchools } from "@/services/admissionApi";
 import { schools } from "@/data/mockSchools";
 import { cn } from "@/lib/utils";
+
+// Utility function to format monthly fees
+const formatMonthlyFee = (annualAmount: number): string => {
+  const monthly = Math.round(annualAmount / 12);
+  if (monthly >= 100000) { // 1L and above
+    return `₹${(monthly / 100000).toFixed(1)}L`;
+  } else if (monthly >= 1000) { // 1K and above
+    return `₹${(monthly / 1000).toFixed(0)}K`;
+  } else {
+    return `₹${monthly.toLocaleString()}`;
+  }
+};
 
 interface SchoolMatchingProps {
   childProfile: ChildProfile;
@@ -33,19 +50,48 @@ interface SchoolMatchingProps {
   onContinue: () => void;
 }
 
-export default function SchoolMatching({ 
-  childProfile, 
+export default function SchoolMatching({
+  childProfile,
   selectedSchools,
-  onSchoolsSelected, 
-  onContinue 
+  onSchoolsSelected,
+  onContinue
 }: SchoolMatchingProps) {
+  const router = useRouter();
   const [matches, setMatches] = useState<SchoolMatch[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedSchool, setExpandedSchool] = useState<string | null>(null);
+  const [savedSchools, setSavedSchools] = useState<string[]>([]);
+  const [appliedSchools, setAppliedSchools] = useState<string[]>([]);
 
   useEffect(() => {
     loadMatches();
+    // Load saved schools from localStorage
+    const saved = localStorage.getItem('savedSchools');
+    if (saved) {
+      setSavedSchools(JSON.parse(saved));
+    }
   }, [childProfile]);
+
+  const handleSaveSchool = (schoolId: string) => {
+    const newSaved = savedSchools.includes(schoolId)
+      ? savedSchools.filter(id => id !== schoolId)
+      : [...savedSchools, schoolId];
+
+    setSavedSchools(newSaved);
+    localStorage.setItem('savedSchools', JSON.stringify(newSaved));
+  };
+
+  const handleViewDetails = (schoolId: string) => {
+    router.push(`/school/${schoolId}`);
+  };
+
+  const handleApplyToSchool = (schoolId: string) => {
+    if (!appliedSchools.includes(schoolId)) {
+      setAppliedSchools(prev => [...prev, schoolId]);
+      // Here you would typically make an API call to submit the application
+      console.log(`Applied to school: ${schoolId}`);
+    }
+  };
 
   const loadMatches = async () => {
     setLoading(true);
@@ -239,7 +285,7 @@ export default function SchoolMatching({
                         </span>
                         <span className="flex items-center">
                           <IndianRupee className="w-3 h-3 mr-0.5" />
-                          {school.feeRange}
+                          {formatMonthlyFee(school.annualFee)}/month*
                         </span>
                       </div>
 
@@ -251,6 +297,47 @@ export default function SchoolMatching({
                         </div>
                         <Progress value={match.score} className="h-1.5" />
                       </div>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex gap-2 mt-3">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1 text-xs"
+                        onClick={() => handleViewDetails(match.schoolId)}
+                      >
+                        <Eye className="w-3 h-3 mr-1" />
+                        View Details
+                      </Button>
+
+                      <Button
+                        variant={savedSchools.includes(match.schoolId) ? "default" : "outline"}
+                        size="sm"
+                        className="text-xs"
+                        onClick={() => handleSaveSchool(match.schoolId)}
+                      >
+                        <Bookmark className={cn(
+                          "w-3 h-3",
+                          savedSchools.includes(match.schoolId) && "fill-current"
+                        )} />
+                      </Button>
+
+                      {appliedSchools.includes(match.schoolId) ? (
+                        <Badge variant="secondary" className="text-xs px-2 py-1">
+                          <Check className="w-3 h-3 mr-1" />
+                          Applied
+                        </Badge>
+                      ) : (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="text-xs"
+                          onClick={() => handleApplyToSchool(match.schoolId)}
+                        >
+                          Apply
+                        </Button>
+                      )}
                     </div>
                   </div>
 
@@ -310,14 +397,34 @@ export default function SchoolMatching({
 
       {/* Continue Button */}
       <div className="p-4 border-t bg-card">
-        <Button 
-          className="w-full" 
-          size="lg"
-          onClick={onContinue}
-          disabled={selectedSchools.length === 0}
-        >
-          Continue with {selectedSchools.length} School{selectedSchools.length !== 1 ? "s" : ""}
-        </Button>
+        {appliedSchools.length > 0 ? (
+          <div className="space-y-3">
+            <div className="text-center">
+              <Check className="w-8 h-8 text-success mx-auto mb-2" />
+              <h3 className="font-semibold text-foreground">Applications Submitted!</h3>
+              <p className="text-sm text-muted-foreground">
+                You've applied to {appliedSchools.length} school{appliedSchools.length !== 1 ? "s" : ""}.
+                We'll notify you of any updates.
+              </p>
+            </div>
+            <Button
+              className="w-full"
+              size="lg"
+              onClick={() => router.push('/profile')}
+            >
+              View Application Status
+            </Button>
+          </div>
+        ) : (
+          <Button
+            className="w-full"
+            size="lg"
+            onClick={onContinue}
+            disabled={selectedSchools.length === 0}
+          >
+            Continue with {selectedSchools.length} School{selectedSchools.length !== 1 ? "s" : ""}
+          </Button>
+        )}
       </div>
     </div>
   );

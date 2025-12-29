@@ -33,9 +33,22 @@ import SchoolAchievements from "@/components/SchoolAchievements";
 import VirtualTour from "@/components/VirtualTour";
 import SchoolComparisonChart from "@/components/SchoolComparisonChart";
 import { getSchoolBySlug } from "@/data/mockSchools";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+
+// Utility function to format monthly fees
+const formatMonthlyFee = (annualAmount: number): string => {
+  const monthly = Math.round(annualAmount / 12);
+  if (monthly >= 100000) { // 1L and above
+    return `₹${(monthly / 100000).toFixed(1)}L`;
+  } else if (monthly >= 1000) { // 1K and above
+    return `₹${(monthly / 1000).toFixed(0)}K`;
+  } else {
+    return `₹${monthly.toLocaleString()}`;
+  }
+};
+import { SchoolDetailHeaderSkeleton, SchoolDetailContentSkeleton } from "@/components/ui/skeleton";
 
 interface SchoolDetailPageProps {
   params: {
@@ -48,8 +61,18 @@ export default function SchoolDetail({ params }: SchoolDetailPageProps) {
   const [isSaved, setIsSaved] = useState(false);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [isVisitSheetOpen, setIsVisitSheetOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const school = getSchoolBySlug(params.slug);
+
+  // Simulate loading
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1200); // Show skeletons for 1.2 seconds
+
+    return () => clearTimeout(timer);
+  }, []);
 
   if (!school) {
     notFound();
@@ -66,6 +89,16 @@ export default function SchoolDetail({ params }: SchoolDetailPageProps) {
       toast.success("Link copied to clipboard!");
     }
   };
+
+  // Show loading skeletons
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background pb-24">
+        <SchoolDetailHeaderSkeleton />
+        <SchoolDetailContentSkeleton />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -182,7 +215,7 @@ export default function SchoolDetail({ params }: SchoolDetailPageProps) {
           <div className="flex items-center justify-between mb-4">
             <div>
               <p className="text-sm text-muted-foreground">Annual Fee</p>
-              <p className="text-xl font-bold text-primary">{school.feeRange}</p>
+              <p className="text-xl font-bold text-primary">{formatMonthlyFee(school.annualFee)}/month*</p>
             </div>
             <div className="flex gap-3">
               {school.hasTransport && (

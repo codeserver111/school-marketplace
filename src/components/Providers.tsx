@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ComparisonProvider } from "../contexts/ComparisonContext";
 import { UserProvider } from "../contexts/UserContext";
+import ComparisonBar from "./ComparisonBar";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -28,6 +29,7 @@ export default function Providers({ children }: ProvidersProps) {
             <Toaster />
             <Sonner position="top-center" />
             {children}
+            <ComparisonBar />
           </ComparisonProvider>
         </UserProvider>
       </TooltipProvider>

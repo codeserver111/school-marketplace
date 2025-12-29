@@ -9,6 +9,18 @@ import { motion } from "framer-motion";
 import { getAverageRating, getRatingDistribution } from "@/data/mockReviews";
 import BottomNavigation from "@/components/BottomNavigation";
 
+// Utility function to format monthly fees
+const formatMonthlyFee = (annualAmount: number): string => {
+  const monthly = Math.round(annualAmount / 12);
+  if (monthly >= 100000) { // 1L and above
+    return `₹${(monthly / 100000).toFixed(1)}L`;
+  } else if (monthly >= 1000) { // 1K and above
+    return `₹${(monthly / 1000).toFixed(0)}K`;
+  } else {
+    return `₹${monthly.toLocaleString()}`;
+  }
+};
+
 export default function Compare() {
   const { selectedSchools, removeSchool } = useComparison();
   const router = useRouter();
@@ -51,7 +63,7 @@ export default function Compare() {
         return `${total} reviews`;
       }
     },
-    { label: "Annual Fee", getValue: (s: typeof selectedSchools[0]) => s.feeRange },
+    { label: "Monthly Fee*", getValue: (s: typeof selectedSchools[0]) => `${formatMonthlyFee(s.annualFee)}/month` },
     { label: "Board", getValue: (s: typeof selectedSchools[0]) => s.board },
     { label: "Grades", getValue: (s: typeof selectedSchools[0]) => s.grades },
     { label: "Student Count", getValue: (s: typeof selectedSchools[0]) => s.studentCount.toLocaleString() },
@@ -126,7 +138,7 @@ export default function Compare() {
                   <Star className="w-4 h-4 fill-warning text-warning" />
                   <span className="font-semibold text-sm">{school.rating}</span>
                 </div>
-                <p className="text-xs text-muted-foreground">{school.feeRange}</p>
+                <p className="text-xs text-muted-foreground">{formatMonthlyFee(school.annualFee)}/month*</p>
               </motion.div>
             ))}
           </div>

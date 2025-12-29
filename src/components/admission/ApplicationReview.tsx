@@ -22,6 +22,18 @@ import {
 import { schools } from "@/data/mockSchools";
 import { cn } from "@/lib/utils";
 
+// Utility function to format monthly fees
+const formatMonthlyFee = (annualAmount: number): string => {
+  const monthly = Math.round(annualAmount / 12);
+  if (monthly >= 100000) { // 1L and above
+    return `₹${(monthly / 100000).toFixed(1)}L`;
+  } else if (monthly >= 1000) { // 1K and above
+    return `₹${(monthly / 1000).toFixed(0)}K`;
+  } else {
+    return `₹${monthly.toLocaleString()}`;
+  }
+};
+
 interface ApplicationReviewProps {
   childProfile: ChildProfile;
   documents: DocumentUploadType[];
@@ -225,7 +237,7 @@ export default function ApplicationReview({
                     <div className="flex-1 min-w-0">
                       <p className="font-medium text-sm line-clamp-1">{school.name}</p>
                       <p className="text-xs text-muted-foreground">
-                        {school.board} • {school.feeRange}
+                        {school.board} • {formatMonthlyFee(school.annualFee)}/month*
                       </p>
                     </div>
                     {match && (
