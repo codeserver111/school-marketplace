@@ -1,4 +1,5 @@
 export type ClassLevel = "Play School" | "Primary" | "Middle" | "High School";
+export type SchoolTypeCategory = "preschool" | "day-school" | "boarding" | "day-boarding";
 
 export interface School {
   id: string;
@@ -30,6 +31,10 @@ export interface School {
   contactPhone: string;
   contactEmail: string;
   isPopular?: boolean;
+  schoolType: SchoolTypeCategory;
+  hasMeals?: boolean;
+  hasBusTracking?: boolean;
+  hasSafety?: boolean;
 }
 
 export const schools: School[] = [
@@ -66,7 +71,11 @@ export const schools: School[] = [
     timings: "8:00 AM - 2:30 PM",
     contactPhone: "+91 98765 43210",
     contactEmail: "admissions@dpsvasantkunj.edu.in",
-    isPopular: true
+    isPopular: true,
+    schoolType: "day-boarding",
+    hasMeals: true,
+    hasBusTracking: true,
+    hasSafety: true
   },
   {
     id: "2",
@@ -100,7 +109,11 @@ export const schools: School[] = [
     description: "Ryan International School focuses on developing well-rounded individuals through a balanced curriculum emphasizing academics, sports, and values education.",
     timings: "7:45 AM - 2:00 PM",
     contactPhone: "+91 98765 43211",
-    contactEmail: "info@ryanmayurvihar.edu.in"
+    contactEmail: "info@ryanmayurvihar.edu.in",
+    schoolType: "day-school",
+    hasMeals: true,
+    hasBusTracking: true,
+    hasSafety: true
   },
   {
     id: "3",
@@ -135,7 +148,11 @@ export const schools: School[] = [
     timings: "8:15 AM - 3:00 PM",
     contactPhone: "+91 98765 43212",
     contactEmail: "admissions@sanskritischool.edu.in",
-    isPopular: true
+    isPopular: true,
+    schoolType: "day-school",
+    hasMeals: true,
+    hasBusTracking: true,
+    hasSafety: true
   },
   {
     id: "4",
@@ -169,7 +186,11 @@ export const schools: School[] = [
     description: "Inspired by Sri Aurobindo's philosophy, the school emphasizes integral education that develops the physical, vital, mental, psychic, and spiritual aspects of each child.",
     timings: "8:00 AM - 2:15 PM",
     contactPhone: "+91 98765 43213",
-    contactEmail: "info@themothersinternational.org"
+    contactEmail: "info@themothersinternational.org",
+    schoolType: "day-boarding",
+    hasMeals: true,
+    hasBusTracking: true,
+    hasSafety: true
   },
   {
     id: "5",
@@ -204,7 +225,11 @@ export const schools: School[] = [
     timings: "8:00 AM - 2:45 PM",
     contactPhone: "+91 98765 43214",
     contactEmail: "admissions@tsrs.org",
-    isPopular: true
+    isPopular: true,
+    schoolType: "day-school",
+    hasMeals: true,
+    hasBusTracking: true,
+    hasSafety: true
   },
   {
     id: "6",
@@ -238,7 +263,11 @@ export const schools: School[] = [
     description: "Part of the Amity Education Group, the school combines academic excellence with exposure to global opportunities and cutting-edge technology.",
     timings: "7:30 AM - 2:00 PM",
     contactPhone: "+91 98765 43215",
-    contactEmail: "info@amitysaket.edu.in"
+    contactEmail: "info@amitysaket.edu.in",
+    schoolType: "day-boarding",
+    hasMeals: true,
+    hasBusTracking: true,
+    hasSafety: true
   },
   {
     id: "7",
@@ -272,7 +301,11 @@ export const schools: School[] = [
     description: "A nurturing environment for early learners focusing on play-based learning and holistic child development.",
     timings: "9:00 AM - 12:30 PM",
     contactPhone: "+91 98765 43216",
-    contactEmail: "info@littleangels.edu.in"
+    contactEmail: "info@littleangels.edu.in",
+    schoolType: "preschool",
+    hasMeals: true,
+    hasBusTracking: true,
+    hasSafety: true
   },
   {
     id: "8",
@@ -306,7 +339,11 @@ export const schools: School[] = [
     description: "Focused on providing quality high school education with emphasis on board exam preparation and career guidance.",
     timings: "7:30 AM - 2:00 PM",
     contactPhone: "+91 98765 43217",
-    contactEmail: "info@brightfuture.edu.in"
+    contactEmail: "info@brightfuture.edu.in",
+    schoolType: "day-school",
+    hasMeals: false,
+    hasBusTracking: true,
+    hasSafety: true
   },
   {
     id: "9",
@@ -341,7 +378,11 @@ export const schools: School[] = [
     timings: "8:00 AM - 3:00 PM",
     contactPhone: "+91 98765 43218",
     contactEmail: "admissions@cambridgeinternational.edu.in",
-    isPopular: true
+    isPopular: true,
+    schoolType: "boarding",
+    hasMeals: true,
+    hasBusTracking: false,
+    hasSafety: true
   },
   {
     id: "10",
@@ -375,7 +416,11 @@ export const schools: School[] = [
     description: "A safe and nurturing environment designed specifically for toddlers and young children, focusing on early childhood development through play.",
     timings: "9:00 AM - 1:00 PM",
     contactPhone: "+91 98765 43219",
-    contactEmail: "info@tinytots.edu.in"
+    contactEmail: "info@tinytots.edu.in",
+    schoolType: "preschool",
+    hasMeals: true,
+    hasBusTracking: true,
+    hasSafety: true
   },
   {
     id: "11",
@@ -409,7 +454,11 @@ export const schools: School[] = [
     description: "Modern Public School combines traditional values with modern teaching methodologies to provide quality education accessible to all.",
     timings: "7:45 AM - 2:15 PM",
     contactPhone: "+91 98765 43220",
-    contactEmail: "info@modernpublic.edu.in"
+    contactEmail: "info@modernpublic.edu.in",
+    schoolType: "day-school",
+    hasMeals: true,
+    hasBusTracking: true,
+    hasSafety: true
   },
   {
     id: "12",
@@ -443,7 +492,11 @@ export const schools: School[] = [
     description: "St. Mary's Convent School has been providing quality education rooted in Christian values for over 70 years, nurturing students to become responsible citizens.",
     timings: "8:00 AM - 2:00 PM",
     contactPhone: "+91 98765 43221",
-    contactEmail: "admissions@stmarys.edu.in"
+    contactEmail: "admissions@stmarys.edu.in",
+    schoolType: "boarding",
+    hasMeals: true,
+    hasBusTracking: false,
+    hasSafety: true
   },
   {
     id: "13",
@@ -477,7 +530,11 @@ export const schools: School[] = [
     description: "Vedanta Academy integrates ancient Indian wisdom with modern education, focusing on holistic development of mind, body, and spirit.",
     timings: "7:30 AM - 1:30 PM",
     contactPhone: "+91 98765 43222",
-    contactEmail: "info@vedantaacademy.edu.in"
+    contactEmail: "info@vedantaacademy.edu.in",
+    schoolType: "day-school",
+    hasMeals: false,
+    hasBusTracking: true,
+    hasSafety: true
   },
   {
     id: "14",
@@ -511,7 +568,11 @@ export const schools: School[] = [
     description: "Tech Valley School is a STEM-focused institution preparing students for the digital age with cutting-edge technology education and hands-on learning.",
     timings: "8:30 AM - 3:00 PM",
     contactPhone: "+91 98765 43223",
-    contactEmail: "admissions@techvalley.edu.in"
+    contactEmail: "admissions@techvalley.edu.in",
+    schoolType: "day-school",
+    hasMeals: true,
+    hasBusTracking: true,
+    hasSafety: true
   },
   {
     id: "15",
@@ -545,7 +606,11 @@ export const schools: School[] = [
     description: "Rainbow Kids School provides a colorful and creative learning environment for young children, focusing on experiential and activity-based education.",
     timings: "8:30 AM - 1:30 PM",
     contactPhone: "+91 98765 43224",
-    contactEmail: "hello@rainbowkids.edu.in"
+    contactEmail: "hello@rainbowkids.edu.in",
+    schoolType: "preschool",
+    hasMeals: true,
+    hasBusTracking: true,
+    hasSafety: true
   }
 ];
 
@@ -573,8 +638,16 @@ export const filterSchools = (filters: {
   searchQuery?: string;
   classLevel?: string;
   maxDistance?: number;
+  schoolType?: SchoolTypeCategory | null;
 }): School[] => {
   return schools.filter(school => {
+    // School type filter
+    if (filters.schoolType) {
+      if (school.schoolType !== filters.schoolType) {
+        return false;
+      }
+    }
+    
     if (filters.board && filters.board !== "All" && school.board !== filters.board) {
       return false;
     }
@@ -624,4 +697,8 @@ export const filterSchools = (filters: {
     
     return true;
   });
+};
+
+export const getSchoolsByType = (type: SchoolTypeCategory): School[] => {
+  return schools.filter(school => school.schoolType === type);
 };
