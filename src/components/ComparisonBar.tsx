@@ -2,11 +2,11 @@ import { X, GitCompare } from "lucide-react";
 import { useComparison } from "@/contexts/ComparisonContext";
 import { Button } from "./ui/button";
 import { motion, AnimatePresence } from "framer-motion";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 
 const ComparisonBar = () => {
   const { selectedSchools, removeSchool, clearAll } = useComparison();
-  const navigate = useNavigate();
+  const router = useRouter();
 
   if (selectedSchools.length === 0) return null;
 
@@ -67,7 +67,7 @@ const ComparisonBar = () => {
 
           <Button
             className="w-full"
-            onClick={() => navigate("/compare")}
+            onClick={() => router.push("/compare")}
             disabled={selectedSchools.length < 2}
           >
             <GitCompare className="w-4 h-4 mr-2" />

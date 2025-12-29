@@ -1,24 +1,13 @@
-import { useEffect, useRef } from "react";
+"use client";
+
+import { useEffect, useRef, useMemo } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { Star, MapPin } from "lucide-react";
 import { School } from "@/data/mockSchools";
 import { Button } from "@/components/ui/button";
 import "leaflet/dist/leaflet.css";
-
-// Fix for default marker icons in Leaflet with Vite
-const defaultIcon = L.divIcon({
-  className: "custom-marker",
-  html: `<div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center shadow-lg border-2 border-white">
-    <svg class="w-4 h-4 text-primary-foreground" fill="currentColor" viewBox="0 0 24 24">
-      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
-    </svg>
-  </div>`,
-  iconSize: [32, 32],
-  iconAnchor: [16, 32],
-  popupAnchor: [0, -32]
-});
 
 interface SchoolMapViewProps {
   schools: School[];
@@ -39,7 +28,22 @@ const MapController = ({ schools }: { schools: School[] }) => {
 
 const SchoolMapView = ({ schools }: SchoolMapViewProps) => {
   const defaultCenter: [number, number] = [28.5728, 77.2090]; // Delhi center
-  
+
+  // Create the default icon only on the client side
+  const defaultIcon = useMemo(() => {
+    return L.divIcon({
+      className: "custom-marker",
+      html: `<div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center shadow-lg border-2 border-white">
+        <svg class="w-4 h-4 text-primary-foreground" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+        </svg>
+      </div>`,
+      iconSize: [32, 32],
+      iconAnchor: [16, 32],
+      popupAnchor: [0, -32]
+    });
+  }, []);
+
   return (
     <div className="relative h-[400px] rounded-xl overflow-hidden border border-border shadow-sm">
       <MapContainer
@@ -81,7 +85,7 @@ const SchoolMapView = ({ schools }: SchoolMapViewProps) => {
                   <MapPin className="w-3 h-3" />
                   <span className="line-clamp-1">{school.address}</span>
                 </div>
-                <Link to={`/school/${school.slug}`}>
+                <Link href={`/school/${school.slug}`}>
                   <Button size="sm" className="w-full text-xs h-7">
                     View Details
                   </Button>

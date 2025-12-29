@@ -243,7 +243,7 @@ export const addReview = (review: Omit<Review, 'id' | 'date' | 'helpful'>): Revi
   const newReview: Review = {
     ...review,
     id: `r${Date.now()}`,
-    date: new Date().toISOString().split('T')[0],
+    date: "2024-01-15",
     helpful: 0
   };
   reviews.push(newReview);

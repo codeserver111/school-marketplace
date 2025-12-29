@@ -1,5 +1,5 @@
 import { Star, MapPin, Bus, Home, Heart, GitCompare } from "lucide-react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { School } from "@/data/mockSchools";
 import { Button } from "./ui/button";
 import { motion } from "framer-motion";
@@ -66,7 +66,7 @@ const SchoolCard = ({ school, index = 0 }: SchoolCardProps) => {
       animate={{ y: 0, opacity: 1 }}
       transition={{ delay: index * 0.05 }}
     >
-      <Link to={`/school/${school.slug}`} className="block">
+      <Link href={`/school/${school.slug}`} className="block">
         <article className={cn(
           "bg-card rounded-xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 group",
           selected && "ring-2 ring-primary"
