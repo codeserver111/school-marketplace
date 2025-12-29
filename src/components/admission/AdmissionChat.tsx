@@ -239,6 +239,7 @@ const chatModeSteps: ChatStep[] = [
 const stepQuestions: Record<ChatStep, string> = {
   intro: "👋 Hello! I'm your Admission Assistant. I'll help you find the perfect school for your child in just a few steps. Let's get started!",
   profile_templates: "Choose a profile that matches your child's situation, or select 'Custom' to enter details manually:",
+  chat_started: "Let's get started with your school search!",
   custom_profile: "No worries! Let's collect the details step by step.",
   child_name: "What is your child's name?",
   child_age: "How old is your child? (e.g., 4 years or 4.5)",
