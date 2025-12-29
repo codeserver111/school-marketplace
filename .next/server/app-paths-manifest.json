@@ -1,8 +1,12 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
+  "/compare/page": "app/compare/page.js",
+  "/about/page": "app/about/page.js",
   "/page": "app/page.js",
-  "/school/[slug]/page": "app/school/[slug]/page.js",
-  "/admission/page": "app/admission/page.js",
+  "/map/page": "app/map/page.js",
+  "/profile/page": "app/profile/page.js",
+  "/saved/page": "app/saved/page.js",
   "/schools/page": "app/schools/page.js",
-  "/saved/page": "app/saved/page.js"
+  "/school/[slug]/page": "app/school/[slug]/page.js",
+  "/admission/page": "app/admission/page.js"
 }
