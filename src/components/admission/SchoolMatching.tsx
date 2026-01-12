@@ -242,7 +242,7 @@ export default function SchoolMatching({
                         {school.name}
                       </h3>
                       <p className="text-sm text-muted-foreground flex items-center mt-1">
-                        <MapPin className="w-3.5 h-3.5 mr-1" /> {school.address.area}, {school.city}
+                        <MapPin className="w-3.5 h-3.5 mr-1" /> {school.address}, {school.city}
                       </p>
                     </div>
 
