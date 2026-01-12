@@ -13,7 +13,8 @@ import {
     CheckCircle2,
     AlertCircle,
     ShieldCheck,
-    ChevronLeft
+    ChevronLeft,
+    Calendar
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -36,6 +37,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = "login" }: AuthModalProps) =
     const [password, setPassword] = useState("");
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
+    const [dob, setDob] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
     const handleLogin = async (e: React.FormEvent) => {
@@ -57,14 +59,14 @@ const AuthModal = ({ isOpen, onClose, initialMode = "login" }: AuthModalProps) =
 
     const handleSignup = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!name || !phone || !email || !password) {
+        if (!name || !phone || !email || !password || !dob) {
             toast.error("Please fill in all fields");
             return;
         }
         setIsLoading(true);
         // Simulate API call
         setTimeout(() => {
-            signup(name, phone, email);
+            signup(name, phone, email, dob);
             setIsLoading(false);
             onClose();
             toast.success("Account created successfully!");
@@ -190,21 +192,39 @@ const AuthModal = ({ isOpen, onClose, initialMode = "login" }: AuthModalProps) =
                                 </div>
 
                                 {mode === "signup" && (
-                                    <div className="space-y-2">
-                                        <label className="text-xs font-bold text-white/60 uppercase tracking-widest ml-1">Email Address</label>
-                                        <div className="relative group">
-                                            <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                                                <Mail className="w-5 h-5 text-white/40 group-focus-within:text-primary transition-colors" />
+                                    <>
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-bold text-white/60 uppercase tracking-widest ml-1">Email Address</label>
+                                            <div className="relative group">
+                                                <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+                                                    <Mail className="w-5 h-5 text-white/40 group-focus-within:text-primary transition-colors" />
+                                                </div>
+                                                <input
+                                                    type="email"
+                                                    value={email}
+                                                    onChange={(e) => setEmail(e.target.value)}
+                                                    placeholder="rahul@example.com"
+                                                    className="w-full h-14 bg-white/10 border border-white/20 rounded-2xl pl-12 pr-4 text-white focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all placeholder:text-white/40"
+                                                />
                                             </div>
-                                            <input
-                                                type="email"
-                                                value={email}
-                                                onChange={(e) => setEmail(e.target.value)}
-                                                placeholder="rahul@example.com"
-                                                className="w-full h-14 bg-white/10 border border-white/20 rounded-2xl pl-12 pr-4 text-white focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all placeholder:text-white/40"
-                                            />
                                         </div>
-                                    </div>
+
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-bold text-white/60 uppercase tracking-widest ml-1">Date of Birth</label>
+                                            <div className="relative group">
+                                                <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+                                                    <Calendar className="w-5 h-5 text-white/40 group-focus-within:text-primary transition-colors" />
+                                                </div>
+                                                <input
+                                                    type="date"
+                                                    value={dob}
+                                                    onChange={(e) => setDob(e.target.value)}
+                                                    className="w-full h-14 bg-white/10 border border-white/20 rounded-2xl pl-12 pr-4 text-white focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all placeholder:text-white/40 opacity-100"
+                                                    style={{ colorScheme: "dark" }}
+                                                />
+                                            </div>
+                                        </div>
+                                    </>
                                 )}
 
                                 {mode !== "forgot-password" && (

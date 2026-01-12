@@ -11,7 +11,7 @@ interface UserContextType {
   savedSchools: School[];
   recentSearches: string[];
   login: (phone: string, password?: string) => void;
-  signup: (name: string, phone: string, email: string) => void;
+  signup: (name: string, phone: string, email: string, dob: string) => void;
   resetPassword: (phone: string) => void;
   logout: () => void;
   continueAsGuest: () => void;
@@ -28,6 +28,7 @@ interface UserProfile {
   name: string;
   phone: string;
   email?: string;
+  dob?: string;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -102,11 +103,12 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem(STORAGE_KEYS.isGuest);
   };
 
-  const signup = (name: string, phone: string, email: string) => {
+  const signup = (name: string, phone: string, email: string, dob: string) => {
     const userProfile: UserProfile = {
       name,
       phone,
       email,
+      dob,
     };
     setUser(userProfile);
     setIsLoggedIn(true);

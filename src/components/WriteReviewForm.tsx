@@ -16,11 +16,11 @@ interface WriteReviewFormProps {
   onReviewAdded: () => void;
 }
 
-const WriteReviewForm = ({ 
-  schoolId, 
-  schoolName, 
-  onClose, 
-  onReviewAdded 
+const WriteReviewForm = ({
+  schoolId,
+  schoolName,
+  onClose,
+  onReviewAdded
 }: WriteReviewFormProps) => {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
@@ -39,7 +39,7 @@ const WriteReviewForm = ({
     e.preventDefault();
 
     if (rating === 0) {
-      toast.error("Please select a rating");
+      toast.error("Please select a  Rating");
       return;
     }
 
@@ -159,8 +159,8 @@ const WriteReviewForm = ({
           </div>
 
           {/* Submit Button */}
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             className="w-full gap-2"
             disabled={isSubmitting}
           >

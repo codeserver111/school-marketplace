@@ -1,1 +1,0 @@
-"use strict";exports.id=572,exports.ids=[572],exports.modules={6572:(e,t,r)=>{r.r(t),r.d(t,{default:()=>s});let s=(0,r(8570).createProxy)(String.raw`/media/github/skool.ai/school-marketplace/src/components/Providers.tsx#default`)}};
