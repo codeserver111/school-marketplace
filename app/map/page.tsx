@@ -91,8 +91,6 @@ export default function MapView() {
         setIsMapLoaded(true);
       });
 
-      // Import leaflet CSS
-      import("leaflet/dist/leaflet.css");
     }
   }, []);
 
