@@ -51,6 +51,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = "login" }: AuthModalProps) =
             setIsLoading(false);
             onClose();
             toast.success("Welcome back!");
+
         }, 1500);
     };
 
