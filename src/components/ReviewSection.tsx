@@ -8,10 +8,10 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import ReviewCard from "./ReviewCard";
 import WriteReviewForm from "./WriteReviewForm";
-import { 
-  getReviewsBySchoolId, 
-  getAverageRating, 
-  getRatingDistribution 
+import {
+  getReviewsBySchoolId,
+  getAverageRating,
+  getRatingDistribution
 } from "@/data/mockReviews";
 
 interface ReviewSectionProps {
@@ -27,15 +27,15 @@ const ReviewSection = ({ schoolId, schoolName }: ReviewSectionProps) => {
   const [reviews, setReviews] = useState(getReviewsBySchoolId(schoolId));
   const [sortBy, setSortBy] = useState<SortOption>("recent");
   const [showVerifiedOnly, setShowVerifiedOnly] = useState(false);
-  
+
   const { average, count } = getAverageRating(schoolId);
   const distribution = getRatingDistribution(schoolId);
-  
+
   const sortedAndFilteredReviews = useMemo(() => {
-    let filtered = showVerifiedOnly 
-      ? reviews.filter(r => r.verified) 
+    let filtered = showVerifiedOnly
+      ? reviews.filter(r => r.verified)
       : reviews;
-    
+
     return [...filtered].sort((a, b) => {
       switch (sortBy) {
         case "recent":
@@ -51,7 +51,7 @@ const ReviewSection = ({ schoolId, schoolName }: ReviewSectionProps) => {
       }
     });
   }, [reviews, sortBy, showVerifiedOnly]);
-  
+
   const displayedReviews = showAllReviews ? sortedAndFilteredReviews : sortedAndFilteredReviews.slice(0, 2);
   const maxCount = Math.max(...Object.values(distribution), 1);
 
@@ -63,15 +63,21 @@ const ReviewSection = ({ schoolId, schoolName }: ReviewSectionProps) => {
   const verifiedCount = reviews.filter(r => r.verified).length;
 
   return (
-    <div className="mb-6">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold text-foreground">Reviews & Ratings</h2>
-        <Button 
-          variant="outline" 
+    <div className="mb-12">
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-2xl bg-foreground text-background flex items-center justify-center">
+            <Star className="w-5 h-5 fill-current" />
+          </div>
+          <h2 className="text-2xl font-black text-foreground tracking-tight uppercase">Parent Perspectives</h2>
+        </div>
+        <Button
+          variant="hero"
           size="sm"
           onClick={() => setShowWriteReview(true)}
+          className="rounded-2xl h-11 px-6 text-[10px] font-black uppercase tracking-widest"
         >
-          Write Review
+          Share Experience
         </Button>
       </div>
 
@@ -79,38 +85,44 @@ const ReviewSection = ({ schoolId, schoolName }: ReviewSectionProps) => {
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-card rounded-xl p-4 shadow-card mb-4"
+        className="glass rounded-[2.5rem] p-8 border-white/20 shadow-premium mb-8 relative overflow-hidden"
       >
-        <div className="flex gap-6">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-3xl rounded-full -mr-10 -mt-10" />
+
+        <div className="flex flex-col md:flex-row gap-10 items-center">
           {/* Overall Rating */}
-          <div className="flex flex-col items-center justify-center">
-            <div className="text-4xl font-bold text-foreground">{average || "-"}</div>
-            <div className="flex items-center gap-1 my-1">
+          <div className="flex flex-col items-center justify-center text-center px-4">
+            <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-4">Institutional Quality</span>
+            <div className="text-6xl font-black text-foreground tracking-tighter mb-2">{average || "-"}</div>
+            <div className="flex items-center gap-1.5 mb-3">
               {[1, 2, 3, 4, 5].map((star) => (
                 <Star
                   key={star}
-                  className={`w-4 h-4 ${
-                    star <= Math.round(average)
+                  className={`w-5 h-5 ${star <= Math.round(average)
                       ? "fill-yellow-400 text-yellow-400"
-                      : "text-muted-foreground/30"
-                  }`}
+                      : "text-muted-foreground/20"
+                    }`}
                 />
               ))}
             </div>
-            <span className="text-xs text-muted-foreground">{count} reviews</span>
+            <span className="text-xs font-bold text-muted-foreground">Based on {count} verified reviews</span>
           </div>
 
           {/* Distribution */}
-          <div className="flex-1 space-y-1.5">
+          <div className="flex-1 w-full space-y-3">
             {[5, 4, 3, 2, 1].map((rating) => (
-              <div key={rating} className="flex items-center gap-2">
-                <span className="text-xs text-muted-foreground w-3">{rating}</span>
-                <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                <Progress 
-                  value={(distribution[rating] / maxCount) * 100} 
-                  className="h-2 flex-1"
-                />
-                <span className="text-xs text-muted-foreground w-4 text-right">
+              <div key={rating} className="flex items-center gap-4">
+                <span className="text-[10px] font-black text-muted-foreground w-4">{rating}</span>
+                <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
+                <div className="flex-1 h-2 bg-muted/30 rounded-full overflow-hidden">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${(distribution[rating] / maxCount) * 100}%` }}
+                    transition={{ duration: 1, ease: "easeOut" }}
+                    className="h-full bg-primary"
+                  />
+                </div>
+                <span className="text-[10px] font-black text-muted-foreground w-6 text-right">
                   {distribution[rating]}
                 </span>
               </div>
@@ -120,14 +132,14 @@ const ReviewSection = ({ schoolId, schoolName }: ReviewSectionProps) => {
       </motion.div>
 
       {/* Sort & Filter Controls */}
-      <div className="flex flex-wrap items-center gap-3 mb-4">
-        <div className="flex items-center gap-2">
-          <ArrowUpDown className="w-4 h-4 text-muted-foreground" />
+      <div className="flex flex-col sm:flex-row items-center gap-4 mb-8 glass p-4 rounded-[2rem] border-white/10">
+        <div className="flex items-center gap-3 w-full sm:w-auto">
+          <Filter className="w-4 h-4 text-muted-foreground" />
           <Select value={sortBy} onValueChange={(value: SortOption) => setSortBy(value)}>
-            <SelectTrigger className="w-[140px] h-9">
+            <SelectTrigger className="flex-1 sm:w-[180px] h-11 rounded-xl border-white/10 glass bg-transparent text-[10px] font-black uppercase tracking-widest">
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="glass-dark border-white/10">
               <SelectItem value="recent">Most Recent</SelectItem>
               <SelectItem value="highest">Highest Rated</SelectItem>
               <SelectItem value="lowest">Lowest Rated</SelectItem>
@@ -135,17 +147,18 @@ const ReviewSection = ({ schoolId, schoolName }: ReviewSectionProps) => {
             </SelectContent>
           </Select>
         </div>
-        
-        <div className="flex items-center gap-2 ml-auto">
-          <Switch 
-            id="verified-filter" 
+
+        <div className="flex items-center gap-3 ml-auto bg-muted/20 px-4 py-2 rounded-xl">
+          <Label htmlFor="verified-filter" className="text-[10px] font-black uppercase tracking-widest flex items-center gap-2 cursor-pointer text-muted-foreground">
+            <CheckCircle className="w-4 h-4 text-success" />
+            Verified only
+          </Label>
+          <Switch
+            id="verified-filter"
             checked={showVerifiedOnly}
             onCheckedChange={setShowVerifiedOnly}
+            className="data-[state=checked]:bg-success"
           />
-          <Label htmlFor="verified-filter" className="text-sm flex items-center gap-1 cursor-pointer">
-            <CheckCircle className="w-4 h-4 text-success" />
-            Verified only ({verifiedCount})
-          </Label>
         </div>
       </div>
 
@@ -163,16 +176,16 @@ const ReviewSection = ({ schoolId, schoolName }: ReviewSectionProps) => {
 
       {/* Reviews List */}
       {sortedAndFilteredReviews.length > 0 ? (
-        <div className="space-y-3">
+        <div className="space-y-6">
           {displayedReviews.map((review, index) => (
             <ReviewCard key={review.id} review={review} index={index} />
           ))}
-          
+
           {sortedAndFilteredReviews.length > 2 && (
             <Button
-              variant="ghost"
+              variant="outline"
               onClick={() => setShowAllReviews(!showAllReviews)}
-              className="w-full gap-2 text-primary"
+              className="w-full h-14 rounded-2xl glass border-white/10 text-[10px] font-black uppercase tracking-widest gap-2 hover:bg-white/5"
             >
               {showAllReviews ? (
                 <>
@@ -180,15 +193,20 @@ const ReviewSection = ({ schoolId, schoolName }: ReviewSectionProps) => {
                 </>
               ) : (
                 <>
-                  Show All {sortedAndFilteredReviews.length} Reviews <ChevronDown className="w-4 h-4" />
+                  Explore all {sortedAndFilteredReviews.length} Perspectives <ChevronDown className="w-4 h-4" />
                 </>
               )}
             </Button>
           )}
         </div>
       ) : (
-        <div className="text-center py-8 text-muted-foreground">
-          <p>{showVerifiedOnly ? "No verified reviews yet." : "No reviews yet. Be the first to review!"}</p>
+        <div className="text-center py-20 glass rounded-[2rem] border-white/10">
+          <div className="w-16 h-16 bg-muted/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Filter className="w-8 h-8 text-muted-foreground/30" />
+          </div>
+          <p className="text-sm font-bold text-muted-foreground">
+            {showVerifiedOnly ? "No verified reviews yet." : "No reviews yet. Be the first to review!"}
+          </p>
         </div>
       )}
     </div>

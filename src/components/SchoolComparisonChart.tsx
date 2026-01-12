@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { BarChart3, TrendingUp, Award, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { cn } from "@/lib/utils";
 
 interface ComparisonMetric {
   label: string;
@@ -19,18 +20,18 @@ interface SchoolComparisonChartProps {
   teacherRatio: string;
 }
 
-const SchoolComparisonChart = ({ 
-  schoolName, 
-  schoolRating, 
+const SchoolComparisonChart = ({
+  schoolName,
+  schoolRating,
   schoolFee,
-  teacherRatio 
+  teacherRatio
 }: SchoolComparisonChartProps) => {
   // Parse teacher ratio (e.g., "1:25" -> 25)
   const ratioNumber = parseInt(teacherRatio.split(":")[1] || "25");
 
   const metrics: ComparisonMetric[] = [
     {
-      label: "Overall Rating",
+      label: "Overall Institution Rating",
       schoolValue: schoolRating,
       averageValue: 4.0,
       maxValue: 5,
@@ -38,7 +39,7 @@ const SchoolComparisonChart = ({
       higherIsBetter: true,
     },
     {
-      label: "Academic Performance",
+      label: "Academic Proficiency",
       schoolValue: 92,
       averageValue: 78,
       maxValue: 100,
@@ -46,7 +47,7 @@ const SchoolComparisonChart = ({
       higherIsBetter: true,
     },
     {
-      label: "Infrastructure",
+      label: "Architectural Infrastructure",
       schoolValue: 88,
       averageValue: 72,
       maxValue: 100,
@@ -54,7 +55,7 @@ const SchoolComparisonChart = ({
       higherIsBetter: true,
     },
     {
-      label: "Extra-curricular",
+      label: "Holistic Development",
       schoolValue: 85,
       averageValue: 65,
       maxValue: 100,
@@ -62,7 +63,7 @@ const SchoolComparisonChart = ({
       higherIsBetter: true,
     },
     {
-      label: "Teacher Quality",
+      label: "Pedagogical Excellence",
       schoolValue: 90,
       averageValue: 75,
       maxValue: 100,
@@ -70,11 +71,11 @@ const SchoolComparisonChart = ({
       higherIsBetter: true,
     },
     {
-      label: "Student-Teacher Ratio",
+      label: "Pedagogical Density (Ratio)",
       schoolValue: ratioNumber,
       averageValue: 30,
       maxValue: 40,
-      unit: " students",
+      unit: " Students",
       higherIsBetter: false,
     },
   ];
@@ -82,67 +83,56 @@ const SchoolComparisonChart = ({
   const getPerformanceLabel = (schoolVal: number, avgVal: number, higherIsBetter: boolean = true) => {
     const diff = higherIsBetter ? schoolVal - avgVal : avgVal - schoolVal;
     const percentDiff = Math.abs((diff / avgVal) * 100).toFixed(0);
-    
+
     if (diff > 0) {
-      return { text: `${percentDiff}% above avg`, color: "text-success" };
+      return { text: `${percentDiff}% Above Threshold`, color: "text-emerald-500" };
     } else if (diff < 0) {
-      return { text: `${Math.abs(parseInt(percentDiff))}% below avg`, color: "text-destructive" };
+      return { text: `${Math.abs(parseInt(percentDiff))}% Below Threshold`, color: "text-red-500" };
     }
-    return { text: "Average", color: "text-muted-foreground" };
+    return { text: "Regional Standard", color: "text-muted-foreground" };
   };
 
   return (
-    <div className="mb-6">
+    <div className="mb-12">
       {/* Section Header */}
-      <div className="flex items-center gap-2 mb-4">
-        <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-lg flex items-center justify-center">
-          <BarChart3 className="w-4 h-4 text-white" />
+      <div className="flex items-center gap-3 mb-8">
+        <div className="w-10 h-10 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-lg shadow-indigo-600/20">
+          <BarChart3 className="w-5 h-5" />
         </div>
-        <h2 className="text-lg font-semibold text-foreground">How We Compare</h2>
-        <Badge variant="secondary" className="ml-auto">
-          vs Area Schools
-        </Badge>
+        <h2 className="text-2xl font-black text-foreground tracking-tight uppercase">Competitive Benchmarking</h2>
+        <div className="ml-auto glass px-3 py-1 rounded-xl border-indigo-500/20 text-indigo-600 dark:text-indigo-400 text-[10px] font-black uppercase tracking-widest">
+          Regional Analysis
+        </div>
       </div>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-3 gap-3 mb-6">
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-500/20 rounded-xl p-3 text-center"
-        >
-          <TrendingUp className="w-5 h-5 text-green-600 mx-auto mb-1" />
-          <p className="text-lg font-bold text-foreground">Top 10%</p>
-          <p className="text-xs text-muted-foreground">in Delhi NCR</p>
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-xl p-3 text-center"
-        >
-          <Award className="w-5 h-5 text-amber-600 mx-auto mb-1" />
-          <p className="text-lg font-bold text-foreground">#3</p>
-          <p className="text-xs text-muted-foreground">in {schoolFee > 200000 ? "Premium" : "Mid-range"}</p>
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="bg-gradient-to-br from-blue-500/10 to-indigo-500/10 border border-blue-500/20 rounded-xl p-3 text-center"
-        >
-          <Users className="w-5 h-5 text-blue-600 mx-auto mb-1" />
-          <p className="text-lg font-bold text-foreground">{teacherRatio}</p>
-          <p className="text-xs text-muted-foreground">Teacher Ratio</p>
-        </motion.div>
+      <div className="grid grid-cols-3 gap-4 mb-8">
+        {[
+          { icon: TrendingUp, val: "Elite 5%", label: "Regional Standing", color: "from-emerald-500 to-teal-500" },
+          { icon: Award, val: "#2 Rank", label: "Premium Tier", color: "from-amber-500 to-orange-500" },
+          { icon: Users, val: teacherRatio, label: "Teacher Proximity", color: "from-blue-500 to-indigo-500" },
+        ].map((stat, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.1 }}
+            className="glass rounded-3xl p-6 border-white/10 shadow-card text-center relative overflow-hidden group"
+          >
+            <div className={cn("absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity duration-500 bg-gradient-to-br", stat.color)} />
+            <stat.icon className="w-6 h-6 mx-auto mb-3 text-muted-foreground group-hover:text-foreground transition-colors" />
+            <p className="text-xl font-black text-foreground tracking-tighter mb-1">{stat.val}</p>
+            <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">{stat.label}</p>
+          </motion.div>
+        ))}
       </div>
 
       {/* Comparison Bars */}
-      <div className="bg-card rounded-xl p-4 shadow-card space-y-4">
+      <div className="glass rounded-[2.5rem] p-8 shadow-premium border-white/10 space-y-8">
         {metrics.map((metric, index) => {
           const performance = getPerformanceLabel(
-            metric.schoolValue, 
-            metric.averageValue, 
+            metric.schoolValue,
+            metric.averageValue,
             metric.higherIsBetter
           );
           const schoolPercent = (metric.schoolValue / metric.maxValue) * 100;
@@ -155,49 +145,51 @@ const SchoolComparisonChart = ({
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: index * 0.1 }}
             >
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-foreground">{metric.label}</span>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-semibold text-primary">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-[10px] font-black uppercase tracking-widest text-foreground/70">{metric.label}</span>
+                <div className="flex items-center gap-3">
+                  <span className="text-sm font-black text-foreground tracking-tight">
                     {metric.schoolValue}{metric.unit}
                   </span>
-                  <span className={`text-xs ${performance.color}`}>
+                  <div className="w-1 h-1 bg-muted rounded-full" />
+                  <span className={cn("text-[9px] font-black uppercase tracking-widest", performance.color)}>
                     {performance.text}
                   </span>
                 </div>
               </div>
-              
+
               {/* Visual Bar Comparison */}
-              <div className="relative h-3 bg-secondary rounded-full overflow-hidden">
+              <div className="relative h-2 bg-muted/20 rounded-full overflow-hidden">
                 {/* Average indicator line */}
-                <div 
-                  className="absolute top-0 bottom-0 w-0.5 bg-muted-foreground/50 z-10"
+                <div
+                  className="absolute top-0 bottom-0 w-0.5 bg-foreground/10 z-20"
                   style={{ left: `${avgPercent}%` }}
                 />
                 {/* School value bar */}
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${schoolPercent}%` }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className={`h-full rounded-full ${
+                  transition={{ duration: 1, ease: "circOut", delay: index * 0.1 }}
+                  className={cn(
+                    "h-full rounded-full relative z-10",
                     (metric.higherIsBetter && metric.schoolValue >= metric.averageValue) ||
-                    (!metric.higherIsBetter && metric.schoolValue <= metric.averageValue)
-                      ? "bg-gradient-to-r from-primary to-primary/70"
-                      : "bg-gradient-to-r from-amber-500 to-amber-400"
-                  }`}
+                      (!metric.higherIsBetter && metric.schoolValue <= metric.averageValue)
+                      ? "bg-foreground"
+                      : "bg-red-500/80"
+                  )}
                 />
               </div>
-              
+
               {/* Legend for first item only */}
               {index === 0 && (
-                <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
-                  <div className="flex items-center gap-1">
-                    <div className="w-3 h-2 bg-primary rounded-sm" />
-                    <span>This school</span>
+                <div className="flex items-center gap-6 mt-4 text-[9px] font-black uppercase tracking-widest text-muted-foreground/60">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-1.5 bg-foreground rounded-full" />
+                    <span>{schoolName}</span>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <div className="w-0.5 h-3 bg-muted-foreground/50" />
-                    <span>Area average</span>
+                  <div className="flex items-center gap-2">
+                    <div className="w-0.5 h-3 bg-foreground/20" />
+                    <span>Regional Average</span>
                   </div>
                 </div>
               )}
@@ -207,9 +199,11 @@ const SchoolComparisonChart = ({
       </div>
 
       {/* Disclaimer */}
-      <p className="text-xs text-muted-foreground mt-3 text-center">
-        Based on data from 50+ schools within 10km radius
-      </p>
+      <div className="mt-8 flex items-center justify-center gap-3 text-[10px] font-black uppercase tracking-widest text-muted-foreground/40">
+        <div className="h-[1px] w-8 bg-muted/20" />
+        <span>Data Aggregate: 75+ Peer Institutions (15km radius)</span>
+        <div className="h-[1px] w-8 bg-muted/20" />
+      </div>
     </div>
   );
 };

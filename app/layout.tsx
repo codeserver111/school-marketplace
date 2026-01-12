@@ -2,33 +2,23 @@ import { Inter } from 'next/font/google'
 import dynamic from "next/dynamic";
 import "../src/index.css";
 
+import { Spinner } from "@/components/ui/spinner";
+
 // Create a client component that wraps all providers
 const Providers = dynamic(() => import("../src/components/Providers"), {
   ssr: false,
-  loading: () => <div>Loading...</div>
+  loading: () => (
+    <div className="flex items-center justify-center min-h-screen">
+      <Spinner size={32} />
+    </div>
+  )
 });
 
 const inter = Inter({ subsets: ['latin'] })
 
-export const metadata = {
-  title: 'SchoolFinder - Find the Best Schools Near You',
-  description: 'Discover and compare the best schools near you. Find ratings, fees, amenities and request callbacks from top schools.',
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: 'black-translucent',
-  },
-  openGraph: {
-    title: 'SchoolFinder - Find the Best Schools Near You',
-    description: 'Discover and compare the best schools near you. Find ratings, fees, amenities and request callbacks.',
-    type: 'website',
-    images: ['https://lovable.dev/opengraph-image-p98pqg.png'],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    site: '@SchoolFinder',
-    images: ['https://lovable.dev/opengraph-image-p98pqg.png'],
-  },
-}
+import { constructMetadata } from "@/lib/seo";
+
+export const metadata = constructMetadata();
 
 export const viewport = {
   width: 'device-width',

@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Trophy, Medal, TrendingUp, Users, Star, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 interface Achievement {
   year: string;
@@ -54,136 +55,116 @@ const IconMap = {
 
 const SchoolAchievements = ({ schoolName }: SchoolAchievementsProps) => {
   return (
-    <div className="mb-6">
+    <div className="mb-12">
       {/* Section Header */}
-      <div className="flex items-center gap-2 mb-4">
-        <div className="w-8 h-8 bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg flex items-center justify-center">
-          <Trophy className="w-4 h-4 text-white" />
+      <div className="flex items-center gap-3 mb-8">
+        <div className="w-10 h-10 rounded-2xl bg-amber-500 text-white flex items-center justify-center shadow-lg shadow-amber-500/20">
+          <Trophy className="w-5 h-5" />
         </div>
-        <h2 className="text-lg font-semibold text-foreground">Achievements & Results</h2>
-        <Badge variant="secondary" className="ml-auto bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
-          2024
-        </Badge>
+        <h2 className="text-2xl font-black text-foreground tracking-tight uppercase">Distinguished Milestones</h2>
+        <div className="ml-auto glass px-3 py-1 rounded-xl border-amber-500/20 text-amber-600 dark:text-amber-400 text-[10px] font-black uppercase tracking-widest">
+          Academic Year 2024
+        </div>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 gap-3 mb-6">
+      <div className="grid grid-cols-2 gap-4 mb-8">
         {achievements.slice(0, 4).map((achievement, index) => {
           const Icon = IconMap[achievement.icon];
           return (
             <motion.div
               key={index}
+              whileHover={{ y: -5 }}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className={`relative overflow-hidden rounded-xl p-4 ${
-                achievement.highlight 
-                  ? "bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/20" 
-                  : "bg-card shadow-card"
-              }`}
+              className={cn(
+                "relative overflow-hidden rounded-3xl p-6 border-white/10 shadow-card transition-all duration-300",
+                achievement.highlight
+                  ? "glass bg-gradient-to-br from-primary/10 to-transparent border-primary/20"
+                  : "glass"
+              )}
             >
               {achievement.highlight && (
-                <Sparkles className="absolute top-2 right-2 w-4 h-4 text-primary/40" />
+                <Sparkles className="absolute top-4 right-4 w-5 h-5 text-primary/30 animate-pulse" />
               )}
-              <div className="flex items-center gap-2 mb-2">
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                  achievement.highlight ? "bg-primary/20" : "bg-secondary"
-                }`}>
-                  <Icon className={`w-4 h-4 ${achievement.highlight ? "text-primary" : "text-muted-foreground"}`} />
+              <div className="flex items-center gap-2 mb-4">
+                <div className={cn(
+                  "w-10 h-10 rounded-2xl flex items-center justify-center shadow-inner",
+                  achievement.highlight ? "bg-primary text-white" : "bg-muted/30 text-muted-foreground"
+                )}>
+                  <Icon className="w-5 h-5" />
                 </div>
               </div>
-              <p className="text-2xl font-bold text-foreground">{achievement.value}</p>
-              <p className="text-xs text-muted-foreground">{achievement.title}</p>
+              <p className="text-3xl font-black text-foreground tracking-tighter mb-1">{achievement.value}</p>
+              <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest leading-tight">{achievement.title}</p>
             </motion.div>
           );
         })}
       </div>
 
       {/* Toppers Section */}
-      <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-xl p-4 mb-6">
-        <div className="flex items-center gap-2 mb-4">
-          <Medal className="w-5 h-5 text-amber-600" />
-          <h3 className="font-semibold text-foreground">2024 Board Toppers</h3>
+      <div className="glass rounded-[2.5rem] p-8 border-amber-500/10 bg-gradient-to-br from-amber-500/5 to-transparent mb-8 shadow-premium relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 blur-3xl rounded-full -mr-10 -mt-10" />
+
+        <div className="flex items-center gap-3 mb-8">
+          <div className="w-8 h-8 rounded-xl bg-amber-500/20 flex items-center justify-center">
+            <Medal className="w-4 h-4 text-amber-600" />
+          </div>
+          <h3 className="text-sm font-black text-foreground uppercase tracking-widest">League of Extraordinary Scholars</h3>
         </div>
-        <div className="flex gap-4 overflow-x-auto pb-2 -mx-1 px-1">
+
+        <div className="flex gap-6 overflow-x-auto pb-4 -mx-2 px-2 snap-x hide-scrollbar">
           {toppers.map((topper, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: index * 0.15 }}
-              className="flex-shrink-0 text-center"
+              className="flex-shrink-0 text-center snap-center"
             >
-              <div className="relative mb-2">
-                <img
-                  src={topper.image}
-                  alt={topper.name}
-                  className="w-16 h-16 rounded-full object-cover border-2 border-amber-400"
-                />
+              <div className="relative mb-4">
+                <div className="w-20 h-20 rounded-full p-1 bg-gradient-to-tr from-amber-500 via-orange-400 to-amber-200">
+                  <img
+                    src={topper.image}
+                    alt={topper.name}
+                    className="w-full h-full rounded-full object-cover border-2 border-white dark:border-background"
+                  />
+                </div>
                 {index === 0 && (
-                  <div className="absolute -top-1 -right-1 w-6 h-6 bg-amber-400 rounded-full flex items-center justify-center text-xs">
+                  <div className="absolute -top-2 -right-2 w-8 h-8 glass-dark rounded-full flex items-center justify-center text-sm shadow-lg border-white/10">
                     👑
                   </div>
                 )}
               </div>
-              <p className="font-semibold text-sm text-foreground whitespace-nowrap">{topper.name}</p>
-              <p className="text-primary font-bold text-lg">{topper.score}</p>
-              <p className="text-xs text-muted-foreground">{topper.stream}</p>
+              <p className="font-black text-xs text-foreground tracking-tight mb-1 whitespace-nowrap">{topper.name}</p>
+              <p className="text-amber-600 font-black text-xl tracking-tighter mb-1">{topper.score}</p>
+              <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">{topper.stream}</p>
             </motion.div>
           ))}
         </div>
       </div>
 
       {/* University Placements */}
-      <div className="bg-card rounded-xl p-4 shadow-card mb-6">
-        <div className="flex items-center gap-2 mb-4">
-          <TrendingUp className="w-5 h-5 text-success" />
-          <h3 className="font-semibold text-foreground">University Placements 2024</h3>
+      <div className="glass rounded-[2.5rem] p-8 shadow-premium border-white/10 mb-8 overflow-hidden relative">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-8 h-8 rounded-xl bg-emerald-500/10 flex items-center justify-center">
+            <TrendingUp className="w-4 h-4 text-emerald-600" />
+          </div>
+          <h3 className="text-sm font-black text-foreground uppercase tracking-widest">Elite Placements 2024</h3>
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-3">
           {universityPlacements.map((uni, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className="flex items-center gap-2 bg-secondary/50 rounded-full px-3 py-1.5"
+              whileHover={{ scale: 1.05 }}
+              className="flex items-center gap-3 glass border-white/10 rounded-2xl px-4 py-2 hover:bg-white/10 transition-colors"
             >
-              <span>{uni.logo}</span>
-              <span className="text-sm font-medium text-foreground">{uni.name}</span>
-              <span className="text-xs bg-primary/20 text-primary px-1.5 py-0.5 rounded-full font-semibold">
+              <span className="text-xl">{uni.logo}</span>
+              <span className="text-xs font-black uppercase tracking-widest text-foreground/80">{uni.name}</span>
+              <div className="w-8 h-8 glass-dark rounded-xl flex items-center justify-center text-[10px] font-black text-white ml-2">
                 {uni.count}
-              </span>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-
-      {/* Gallery Preview */}
-      <div className="mb-4">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="font-semibold text-foreground">Annual Day & Events</h3>
-          <span className="text-xs text-primary font-medium">View all →</span>
-        </div>
-        <div className="grid grid-cols-3 gap-2">
-          {[
-            "https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=300",
-            "https://images.unsplash.com/photo-1511578314322-379afb476865?w=300",
-            "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=300",
-          ].map((img, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2 + index * 0.1 }}
-              className="relative aspect-square rounded-lg overflow-hidden"
-            >
-              <img src={img} alt={`Event ${index + 1}`} className="w-full h-full object-cover" />
-              {index === 2 && (
-                <div className="absolute inset-0 bg-foreground/60 flex items-center justify-center">
-                  <span className="text-white font-bold text-lg">+15</span>
-                </div>
-              )}
+              </div>
             </motion.div>
           ))}
         </div>
@@ -191,19 +172,20 @@ const SchoolAchievements = ({ schoolName }: SchoolAchievementsProps) => {
 
       {/* Urgency Banner */}
       <motion.div
+        whileHover={{ scale: 1.02 }}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-r from-red-500 to-orange-500 rounded-xl p-4 text-white"
+        className="relative overflow-hidden bg-gradient-to-br from-red-600 to-orange-500 rounded-[2.5rem] p-8 text-white shadow-xl shadow-red-500/20"
       >
-        <div className="flex items-start gap-3">
-          <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
-            <Sparkles className="w-5 h-5" />
+        <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 blur-3xl rounded-full -mr-20 -mt-20" />
+        <div className="flex items-center gap-6 relative z-10">
+          <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-[1.5rem] flex items-center justify-center flex-shrink-0 shadow-inner">
+            <Sparkles className="w-8 h-8" />
           </div>
           <div>
-            <h3 className="font-bold mb-1">Limited Seats Available!</h3>
-            <p className="text-sm opacity-90">
-              Only <span className="font-bold">23 seats</span> remaining for 2025-26 admissions. 
-              Book a campus visit today!
+            <h3 className="text-xl font-black tracking-tight mb-1 uppercase">Limited Admissions</h3>
+            <p className="text-sm font-medium opacity-90 leading-relaxed capitalize">
+              Secure one of the <span className="font-black underline underline-offset-4 decoration-2">final 23 seats</span> for the 2025-26 academic term.
             </p>
           </div>
         </div>

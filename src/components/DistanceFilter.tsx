@@ -4,6 +4,7 @@ import { MapPin, Navigation } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
 interface DistanceFilterProps {
   maxDistance: number;
@@ -19,11 +20,11 @@ const distancePresets = [
   { label: "Any", value: 50 },
 ];
 
-const DistanceFilter = ({ 
-  maxDistance, 
-  onDistanceChange, 
+const DistanceFilter = ({
+  maxDistance,
+  onDistanceChange,
   totalSchools,
-  filteredCount 
+  filteredCount
 }: DistanceFilterProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -31,41 +32,36 @@ const DistanceFilter = ({
     <motion.div
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="px-4 pb-3"
+      transition={{ delay: 0.25 }}
+      className="px-4 pb-4"
     >
       {/* Compact View */}
-      <div 
-        className="flex items-center gap-2 cursor-pointer"
+      <motion.div
+        whileTap={{ scale: 0.98 }}
+        className="glass rounded-2xl p-4 flex items-center justify-between cursor-pointer border-white/20 shadow-lg shadow-black/5"
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Navigation className="w-4 h-4 text-primary" />
-          <span>Distance:</span>
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+            <Navigation className="w-5 h-5 text-primary" />
+          </div>
+          <div>
+            <p className="text-[10px] uppercase tracking-widest font-black text-muted-foreground leading-none mb-1">Search Radius</p>
+            <p className="text-sm font-bold text-foreground">
+              Within {maxDistance >= 50 ? "Any distance" : `${maxDistance} km`}
+            </p>
+          </div>
         </div>
-        
-        {/* Quick Preset Buttons */}
-        <div className="flex gap-1.5 overflow-x-auto hide-scrollbar">
-          {distancePresets.map((preset) => (
-            <Button
-              key={preset.value}
-              variant={maxDistance === preset.value ? "filterActive" : "filter"}
-              size="chip"
-              onClick={(e) => {
-                e.stopPropagation();
-                onDistanceChange(preset.value);
-              }}
-              className="shrink-0"
-            >
-              <MapPin className="w-3 h-3" />
-              {preset.label}
-            </Button>
-          ))}
+
+        <div className="flex items-center gap-2">
+          <div className="bg-success/10 px-2 py-1 rounded-lg">
+            <span className="text-[10px] font-black text-success uppercase">{filteredCount} Schools</span>
+          </div>
+          <motion.div animate={{ rotate: isExpanded ? 180 : 0 }}>
+            <Navigation className="w-4 h-4 text-muted-foreground" />
+          </motion.div>
         </div>
-        
-        <Badge variant="outline" className="ml-auto shrink-0">
-          {filteredCount} schools
-        </Badge>
-      </div>
+      </motion.div>
 
       {/* Expanded Slider View */}
       {isExpanded && (
@@ -73,62 +69,68 @@ const DistanceFilter = ({
           initial={{ height: 0, opacity: 0 }}
           animate={{ height: "auto", opacity: 1 }}
           exit={{ height: 0, opacity: 0 }}
-          className="mt-4 bg-card rounded-xl p-4 shadow-card"
+          className="mt-3 glass rounded-2xl p-6 shadow-premium border-white/20 overflow-hidden"
         >
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-sm font-medium text-foreground">
-              Within {maxDistance >= 50 ? "Any distance" : `${maxDistance} km`}
+          <div className="flex items-center justify-between mb-6">
+            <span className="text-xs font-black uppercase tracking-widest text-muted-foreground">
+              Set Maximum Distance
             </span>
-            <span className="text-xs text-muted-foreground">
-              {filteredCount} of {totalSchools} schools
-            </span>
+            <div className="flex gap-2">
+              {distancePresets.map((preset) => (
+                <button
+                  key={preset.value}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDistanceChange(preset.value);
+                  }}
+                  className={cn(
+                    "px-3 py-1.5 rounded-lg text-xs font-black transition-all duration-300",
+                    maxDistance === preset.value
+                      ? "bg-primary text-white shadow-lg shadow-primary/20"
+                      : "bg-muted/50 text-muted-foreground hover:bg-muted"
+                  )}
+                >
+                  {preset.label}
+                </button>
+              ))}
+            </div>
           </div>
-          
-          <Slider
-            value={[maxDistance]}
-            onValueChange={(value) => onDistanceChange(value[0])}
-            max={50}
-            min={1}
-            step={1}
-            className="mb-4"
-          />
-          
-          <div className="flex justify-between text-xs text-muted-foreground">
+
+          <div className="relative h-12 flex items-center mb-4">
+            <Slider
+              value={[maxDistance]}
+              onValueChange={(value) => onDistanceChange(value[0])}
+              max={50}
+              min={1}
+              step={1}
+              className="relative z-10"
+            />
+          </div>
+
+          <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-muted-foreground/50">
             <span>1 km</span>
-            <span>10 km</span>
             <span>25 km</span>
             <span>50 km+</span>
           </div>
 
-          {/* Visual Distance Indicator */}
-          <div className="mt-4 flex items-center gap-2">
-            <div className="relative flex-1 h-1 bg-secondary rounded-full overflow-hidden">
-              <motion.div
-                className="absolute left-0 top-0 bottom-0 bg-primary rounded-full"
-                initial={{ width: 0 }}
-                animate={{ width: `${Math.min((maxDistance / 50) * 100, 100)}%` }}
-              />
-            </div>
-          </div>
-
           {/* Nearby Landmarks */}
-          <div className="mt-4 pt-4 border-t border-border">
-            <p className="text-xs text-muted-foreground mb-2">Nearby landmarks within range:</p>
-            <div className="flex flex-wrap gap-1">
+          <div className="mt-6 pt-6 border-t border-dashed border-border">
+            <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground mb-3">Popular Locations in Range</p>
+            <div className="flex flex-wrap gap-1.5">
               {maxDistance >= 2 && (
-                <Badge variant="secondary" className="text-xs">Vasant Kunj</Badge>
+                <span className="bg-white/50 px-3 py-1.5 rounded-lg text-[10px] font-bold text-foreground border border-white">Vasant Kunj</span>
               )}
               {maxDistance >= 5 && (
-                <Badge variant="secondary" className="text-xs">Hauz Khas</Badge>
+                <span className="bg-white/50 px-3 py-1.5 rounded-lg text-[10px] font-bold text-foreground border border-white">Hauz Khas</span>
               )}
               {maxDistance >= 8 && (
-                <Badge variant="secondary" className="text-xs">Saket</Badge>
+                <span className="bg-white/50 px-3 py-1.5 rounded-lg text-[10px] font-bold text-foreground border border-white">Saket</span>
               )}
               {maxDistance >= 12 && (
-                <Badge variant="secondary" className="text-xs">Noida</Badge>
+                <span className="bg-white/50 px-3 py-1.5 rounded-lg text-[10px] font-bold text-foreground border border-white">Noida</span>
               )}
               {maxDistance >= 15 && (
-                <Badge variant="secondary" className="text-xs">Gurgaon</Badge>
+                <span className="bg-white/50 px-3 py-1.5 rounded-lg text-[10px] font-bold text-foreground border border-white">Gurgaon</span>
               )}
             </div>
           </div>

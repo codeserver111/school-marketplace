@@ -14,20 +14,22 @@ import {
   Edit2,
   Heart,
   MessageSquare,
-  Calendar
+  Calendar,
+  ArrowRight,
+  ShieldCheck,
+  CheckCircle2,
+  Sparkles
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Input } from "@/components/ui/input";
 import LocationHeader from "@/components/LocationHeader";
 import BottomNavigation from "@/components/BottomNavigation";
 import { toast } from "sonner";
 import { useUser } from "@/contexts/UserContext";
 import Link from "next/link";
+import AuthModal from "@/components/AuthModal";
 
 export default function Profile() {
-  const { isLoggedIn, isGuest, user, login, logout, continueAsGuest, savedSchools } = useUser();
-  const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const { isLoggedIn, isGuest, user, logout, savedSchools, openAuthModal } = useUser();
 
   const menuItems = [
     {
@@ -71,62 +73,90 @@ export default function Profile() {
 
   if (!isLoggedIn && !isGuest) {
     return (
-      <div className="min-h-screen bg-background pb-20">
+      <div className="min-h-screen bg-background pb-20 overflow-hidden relative">
+        <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-primary/20 rounded-full blur-[100px] -z-10 animate-pulse" />
+        <div className="absolute bottom-[10%] left-[-10%] w-[50%] h-[50%] bg-accent/20 rounded-full blur-[100px] -z-10 animate-pulse-slow" />
+
         <LocationHeader location="New Delhi" />
 
-        <div className="px-4 py-6">
+        <div className="px-6 py-12">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center py-12"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="text-center"
           >
-            <div className="w-20 h-20 bg-primary-light rounded-full flex items-center justify-center mx-auto mb-6">
-              <User className="w-10 h-10 text-primary" />
+            <div className="relative w-24 h-24 mx-auto mb-8">
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                className="absolute inset-0 bg-gradient-to-tr from-primary via-accent to-primary rounded-[2rem] opacity-20 blur-xl"
+              />
+              <div className="relative w-full h-full glass rounded-[2rem] flex items-center justify-center border border-white/20 shadow-premium">
+                <User className="w-10 h-10 text-primary" />
+              </div>
+              <motion.div
+                animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
+                transition={{ duration: 3, repeat: Infinity }}
+                className="absolute -top-2 -right-2 w-8 h-8 glass rounded-full flex items-center justify-center border border-white/20"
+              >
+                <Sparkles className="w-4 h-4 text-accent" />
+              </motion.div>
             </div>
-            <h1 className="text-2xl font-bold text-foreground mb-2">Welcome to SchoolFinder</h1>
-            <p className="text-muted-foreground mb-8 max-w-xs mx-auto">
-              Sign in to save schools, track enquiries, and get personalized recommendations
+
+            <h1 className="text-4xl font-black text-foreground mb-4 tracking-tight leading-none">
+              Your Journey <br /> <span className="text-primary italic">Starts Here</span>
+            </h1>
+            <p className="text-muted-foreground mb-12 max-w-[280px] mx-auto font-medium text-lg leading-relaxed">
+              Unlock elite school comparisons, saved favorites, and AI-powered recommendations.
             </p>
 
-            <div className="space-y-3 max-w-xs mx-auto">
-              <Sheet open={isLoginOpen} onOpenChange={setIsLoginOpen}>
-                <SheetTrigger asChild>
-                  <Button className="w-full" size="lg">
-                    Sign In
-                  </Button>
-                </SheetTrigger>
-                <SheetContent side="bottom" className="rounded-t-3xl">
-                  <div className="py-6">
-                    <h2 className="text-xl font-semibold text-center mb-6">Sign In</h2>
-                    <div className="space-y-4">
-                      <Input placeholder="Email or Phone" />
-                      <Input type="password" placeholder="Password" />
-                      <Button
-                        className="w-full"
-                        onClick={() => {
-                          login("+919876543210"); // Demo phone number
-                          setIsLoginOpen(false);
-                          toast.success("Welcome back!");
-                        }}
-                      >
-                        Sign In
-                      </Button>
-                    </div>
-                  </div>
-                </SheetContent>
-              </Sheet>
-
+            <div className="space-y-4 max-w-xs mx-auto">
               <Button
-                variant="outline"
-                className="w-full"
-                size="lg"
+                className="w-full h-14 rounded-2xl bg-primary hover:bg-primary-dark text-white font-black text-lg shadow-xl shadow-primary/20 group"
                 onClick={() => {
-                  continueAsGuest();
-                  toast.success("Continuing as guest");
+                  openAuthModal("login");
                 }}
               >
-                Continue as Guest
+                Sign In
+                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
+
+              <div className="grid grid-cols-2 gap-3">
+                <Button
+                  variant="outline"
+                  className="h-12 rounded-xl border-white/10 glass hover:bg-white/5 font-bold"
+                  onClick={() => {
+                    openAuthModal("signup");
+                  }}
+                >
+                  Join Us
+                </Button>
+                <Button
+                  variant="ghost"
+                  className="h-12 rounded-xl text-muted-foreground hover:text-foreground font-bold"
+                  onClick={() => {
+                    useUser().continueAsGuest();
+                    toast.success("Welcome, Guest!");
+                  }}
+                >
+                  As Guest
+                </Button>
+              </div>
+            </div>
+
+            <div className="mt-16 flex items-center justify-center gap-8 grayscale opacity-40">
+              <div className="flex flex-col items-center gap-1">
+                <ShieldCheck className="w-6 h-6" />
+                <span className="text-[10px] font-bold uppercase tracking-widest">Secure</span>
+              </div>
+              <div className="flex flex-col items-center gap-1">
+                <CheckCircle2 className="w-6 h-6" />
+                <span className="text-[10px] font-bold uppercase tracking-widest">Verified</span>
+              </div>
+              <div className="flex flex-col items-center gap-1">
+                <Sparkles className="w-6 h-6" />
+                <span className="text-[10px] font-bold uppercase tracking-widest">AI Guided</span>
+              </div>
             </div>
           </motion.div>
         </div>

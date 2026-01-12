@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { School } from "@/data/mockSchools";
+import AuthModal from "@/components/AuthModal";
 
 interface UserContextType {
   isLoggedIn: boolean;
@@ -9,9 +10,13 @@ interface UserContextType {
   user: UserProfile | null;
   savedSchools: School[];
   recentSearches: string[];
-  login: (phone: string) => void;
+  login: (phone: string, password?: string) => void;
+  signup: (name: string, phone: string, email: string) => void;
+  resetPassword: (phone: string) => void;
   logout: () => void;
   continueAsGuest: () => void;
+  openAuthModal: (mode?: "login" | "signup") => void;
+  closeAuthModal: () => void;
   saveSchool: (school: School) => void;
   unsaveSchool: (schoolId: string) => void;
   isSaved: (schoolId: string) => boolean;
@@ -48,6 +53,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [savedSchools, setSavedSchools] = useState<School[]>([]);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authModalMode, setAuthModalMode] = useState<"login" | "signup">("login");
 
   // Load from localStorage on mount
   useEffect(() => {
@@ -81,7 +88,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem(STORAGE_KEYS.recentSearches, JSON.stringify(recentSearches));
   }, [recentSearches]);
 
-  const login = (phone: string) => {
+  const login = (phone: string, password?: string) => {
+    // Demo login logic
     const userProfile: UserProfile = {
       name: "Rahul Sharma",
       phone: phone,
@@ -92,6 +100,24 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     setIsGuest(false);
     localStorage.setItem(STORAGE_KEYS.user, JSON.stringify(userProfile));
     localStorage.removeItem(STORAGE_KEYS.isGuest);
+  };
+
+  const signup = (name: string, phone: string, email: string) => {
+    const userProfile: UserProfile = {
+      name,
+      phone,
+      email,
+    };
+    setUser(userProfile);
+    setIsLoggedIn(true);
+    setIsGuest(false);
+    localStorage.setItem(STORAGE_KEYS.user, JSON.stringify(userProfile));
+    localStorage.removeItem(STORAGE_KEYS.isGuest);
+  };
+
+  const resetPassword = (phone: string) => {
+    // Mock reset password logic
+    console.log(`Reset password request for ${phone}`);
   };
 
   const logout = () => {
@@ -132,6 +158,15 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     setRecentSearches([]);
   };
 
+  const openAuthModal = (mode: "login" | "signup" = "login") => {
+    setAuthModalMode(mode);
+    setIsAuthModalOpen(true);
+  };
+
+  const closeAuthModal = () => {
+    setIsAuthModalOpen(false);
+  };
+
   return (
     <UserContext.Provider
       value={{
@@ -141,8 +176,12 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         savedSchools,
         recentSearches,
         login,
+        signup,
+        resetPassword,
         logout,
         continueAsGuest,
+        openAuthModal,
+        closeAuthModal,
         saveSchool,
         unsaveSchool,
         isSaved,
@@ -151,6 +190,11 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       }}
     >
       {children}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={closeAuthModal}
+        initialMode={authModalMode}
+      />
     </UserContext.Provider>
   );
 };

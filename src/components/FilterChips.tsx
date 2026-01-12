@@ -1,6 +1,7 @@
 import { Button } from "./ui/button";
 import { motion } from "framer-motion";
 import { Building2, Bus, Home, IndianRupee, GraduationCap } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface FilterChipsProps {
   selectedBoard: string;
@@ -35,84 +36,117 @@ const FilterChips = ({
 }: FilterChipsProps) => {
   return (
     <motion.div
-      initial={{ y: 10, opacity: 0 }}
+      initial={{ y: 20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ delay: 0.15 }}
-      className="px-4 pb-3"
+      transition={{ delay: 0.3, duration: 0.5 }}
+      className="px-4 pb-6 space-y-5"
     >
       {/* Class Level filters */}
-      <div className="flex gap-2 overflow-x-auto hide-scrollbar pb-3">
-        <Button
-          variant={selectedClass === "All" ? "filterActive" : "filter"}
-          size="chip"
-          onClick={() => onClassChange("All")}
-          className="shrink-0"
-        >
-          <GraduationCap className="w-3 h-3" />
-          All Classes
-        </Button>
-        {classLevels.map((level) => (
-          <Button
-            key={level}
-            variant={selectedClass === level ? "filterActive" : "filter"}
-            size="chip"
-            onClick={() => onClassChange(level)}
-            className="shrink-0"
+      <div className="space-y-3">
+        <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground px-1">Curriculum & Grade</p>
+        <div className="flex gap-2 overflow-x-auto hide-scrollbar pb-1">
+          <button
+            onClick={() => onClassChange("All")}
+            className={cn(
+              "shrink-0 px-4 py-2.5 rounded-xl text-xs font-black transition-all duration-300 border uppercase tracking-wider",
+              selectedClass === "All"
+                ? "bg-primary text-white border-primary shadow-lg shadow-primary/20"
+                : "glass text-foreground border-white/20 hover:border-primary/50"
+            )}
           >
-            <GraduationCap className="w-3 h-3" />
-            {level}
-          </Button>
-        ))}
+            All Classes
+          </button>
+          {classLevels.map((level) => (
+            <button
+              key={level}
+              onClick={() => onClassChange(level)}
+              className={cn(
+                "shrink-0 px-4 py-2.5 rounded-xl text-xs font-black transition-all duration-300 border uppercase tracking-wider",
+                selectedClass === level
+                  ? "bg-primary text-white border-primary shadow-lg shadow-primary/20"
+                  : "glass text-foreground border-white/20 hover:border-primary/50"
+              )}
+            >
+              {level}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* Board filters */}
-      <div className="flex gap-2 overflow-x-auto hide-scrollbar pb-3">
-        {boards.map((board) => (
-          <Button
-            key={board}
-            variant={selectedBoard === board ? "filterActive" : "filter"}
-            size="chip"
-            onClick={() => onBoardChange(board)}
-            className="shrink-0"
-          >
-            <Building2 className="w-3 h-3" />
-            {board}
-          </Button>
-        ))}
+      {/* Board & Fee filters */}
+      <div className="space-y-3">
+        <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground px-1">Academic Board</p>
+        <div className="flex gap-2 overflow-x-auto hide-scrollbar pb-1">
+          {boards.map((board) => (
+            <button
+              key={board}
+              onClick={() => onBoardChange(board)}
+              className={cn(
+                "shrink-0 px-4 py-2.5 rounded-xl text-xs font-black transition-all duration-300 border uppercase tracking-wider",
+                selectedBoard === board
+                  ? "bg-primary text-white border-primary shadow-lg shadow-primary/20"
+                  : "glass text-foreground border-white/20 hover:border-primary/50"
+              )}
+            >
+              <div className="flex items-center gap-2">
+                <Building2 className="w-3.5 h-3.5" />
+                {board}
+              </div>
+            </button>
+          ))}
+        </div>
       </div>
-      
+
       {/* Fee and amenity filters */}
-      <div className="flex gap-2 overflow-x-auto hide-scrollbar">
-        {feeRanges.slice(0, 3).map((fee) => (
-          <Button
-            key={fee}
-            variant={selectedFee === fee ? "filterActive" : "filter"}
-            size="chip"
-            onClick={() => onFeeChange(fee)}
-            className="shrink-0"
+      <div className="space-y-3">
+        <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground px-1">Budget & Facilities</p>
+        <div className="flex gap-2 overflow-x-auto hide-scrollbar pb-1">
+          {feeRanges.slice(0, 3).map((fee) => (
+            <button
+              key={fee}
+              onClick={() => onFeeChange(fee)}
+              className={cn(
+                "shrink-0 px-4 py-2.5 rounded-xl text-xs font-black transition-all duration-300 border uppercase tracking-wider",
+                selectedFee === fee
+                  ? "bg-primary text-white border-primary shadow-lg shadow-primary/20"
+                  : "glass text-foreground border-white/20 hover:border-primary/50"
+              )}
+            >
+              <div className="flex items-center gap-2">
+                <IndianRupee className="w-3.5 h-3.5" />
+                {fee}
+              </div>
+            </button>
+          ))}
+          <button
+            onClick={onHostelToggle}
+            className={cn(
+              "shrink-0 px-4 py-2.5 rounded-xl text-xs font-black transition-all duration-300 border uppercase tracking-wider",
+              hasHostel
+                ? "bg-primary text-white border-primary shadow-lg shadow-primary/20"
+                : "glass text-foreground border-white/20 hover:border-primary/50"
+            )}
           >
-            <IndianRupee className="w-3 h-3" />
-            {fee}
-          </Button>
-        ))}
-        <Button
-          variant={hasHostel ? "filterActive" : "filter"}
-          size="chip"
-          onClick={onHostelToggle}
-          className="shrink-0"
-        >
-          <Home className="w-3 h-3" />
-          Hostel
-        </Button>
-        <Button
-          variant={hasTransport ? "filterActive" : "filter"}
-          size="chip"
-          onClick={onTransportToggle}
-          className="shrink-0"
-        >
-          <Bus className="w-3 h-3" />
-          Transport
-        </Button>
+            <div className="flex items-center gap-2">
+              <Home className="w-3.5 h-3.5" />
+              Hostel
+            </div>
+          </button>
+          <button
+            onClick={onTransportToggle}
+            className={cn(
+              "shrink-0 px-4 py-2.5 rounded-xl text-xs font-black transition-all duration-300 border uppercase tracking-wider",
+              hasTransport
+                ? "bg-primary text-white border-primary shadow-lg shadow-primary/20"
+                : "glass text-foreground border-white/20 hover:border-primary/50"
+            )}
+          >
+            <div className="flex items-center gap-2">
+              <Bus className="w-3.5 h-3.5" />
+              Transport
+            </div>
+          </button>
+        </div>
       </div>
     </motion.div>
   );

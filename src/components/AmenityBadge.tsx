@@ -1,9 +1,9 @@
-import { 
-  Droplets, 
-  Dumbbell, 
-  FlaskConical, 
-  BookOpen, 
-  Theater, 
+import {
+  Droplets,
+  Dumbbell,
+  FlaskConical,
+  BookOpen,
+  Theater,
   MonitorPlay,
   UtensilsCrossed,
   Stethoscope,
@@ -61,11 +61,13 @@ const amenityIcons: Record<string, React.ComponentType<{ className?: string }>> 
 
 const AmenityBadge = ({ amenity }: AmenityBadgeProps) => {
   const Icon = amenityIcons[amenity] || Award;
-  
+
   return (
-    <div className="flex items-center gap-2 bg-secondary rounded-lg px-3 py-2">
-      <Icon className="w-4 h-4 text-primary shrink-0" />
-      <span className="text-sm text-foreground">{amenity}</span>
+    <div className="flex items-center gap-3 glass border-white/20 rounded-2xl px-5 py-3 shadow-card hover:shadow-premium hover:-translate-y-1 transition-all duration-300 group">
+      <div className="w-8 h-8 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
+        <Icon className="w-4 h-4" />
+      </div>
+      <span className="text-xs font-black uppercase tracking-widest text-foreground/80">{amenity}</span>
     </div>
   );
 };

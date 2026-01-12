@@ -126,11 +126,11 @@ function HeroBannerSkeleton() {
 // School List Skeleton
 function SchoolListSkeleton({ count = 5 }: { count?: number }) {
   return (
-    <div className="px-4 space-y-4 animate-pulse">
+    <>
       {Array.from({ length: count }).map((_, i) => (
         <SchoolCardSkeleton key={i} />
       ))}
-    </div>
+    </>
   );
 }
 

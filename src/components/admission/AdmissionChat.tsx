@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, Bot, User, Sparkles, ChevronRight, MapPin, DollarSign, GraduationCap, Heart } from "lucide-react";
+import { Send, Bot, User, Sparkles, ChevronRight, MapPin, DollarSign, GraduationCap, Heart, Wand2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -33,6 +33,7 @@ interface ProfileTemplate {
   description: string;
   icon: string;
   profile: Partial<ChildProfile>;
+  color: string;
 }
 
 // Utility function to format fees
@@ -84,8 +85,9 @@ const profileTemplates: ProfileTemplate[] = [
   {
     id: "preschool",
     title: "Starting Preschool",
-    description: "3-5 years old, first school experience",
+    description: "3-5 years old, first school",
     icon: "👶",
+    color: "from-pink-500 to-rose-500",
     profile: {
       age: 4,
       targetClass: "Nursery",
@@ -96,8 +98,9 @@ const profileTemplates: ProfileTemplate[] = [
   {
     id: "primary",
     title: "Primary School",
-    description: "6-8 years old, Classes 1-3",
+    description: "Classes 1-5, building foundation",
     icon: "📚",
+    color: "from-blue-500 to-cyan-500",
     profile: {
       age: 7,
       targetClass: "Class 2",
@@ -108,8 +111,9 @@ const profileTemplates: ProfileTemplate[] = [
   {
     id: "transfer",
     title: "School Transfer",
-    description: "Moving from another school",
+    description: "Moving cities or schools",
     icon: "🚚",
+    color: "from-purple-500 to-indigo-500",
     profile: {
       age: 9,
       targetClass: "Class 4",
@@ -120,8 +124,9 @@ const profileTemplates: ProfileTemplate[] = [
   {
     id: "senior",
     title: "Senior Classes",
-    description: "Classes 8-12, board exams preparation",
+    description: "Classes 8-12, career focus",
     icon: "🎓",
+    color: "from-amber-500 to-orange-500",
     profile: {
       age: 14,
       targetClass: "Class 9",
@@ -160,12 +165,10 @@ const classOptions: ChatOption[] = [
 ];
 
 const budgetOptions: ChatOption[] = [
-  { label: `💰 Budget-Friendly (Under ${formatMonthlyFee(100000)}/month average)*`, value: "0-100000" },
-  { label: `💵 Standard Range (${formatMonthlyFee(100000)} - ${formatMonthlyFee(200000)}/month average)*`, value: "100000-200000" },
-  { label: `💳 Premium (${formatMonthlyFee(200000)} - ${formatMonthlyFee(300000)}/month average)*`, value: "200000-300000" },
-  { label: `🏆 Elite Schools (${formatMonthlyFee(300000)} - ${formatMonthlyFee(500000)}/month average)*`, value: "300000-500000" },
-  { label: `👑 Top-Tier (Above ${formatMonthlyFee(500000)}/month average)*`, value: "500000-1000000" },
-  { label: "🤔 Not Sure - Show All Options", value: "0-1000000" },
+  { label: `💰 Budget-Friendly (<${formatMonthlyFee(100000)}/mo)`, value: "0-100000" },
+  { label: `💵 Standard (${formatMonthlyFee(100000)}-${formatMonthlyFee(200000)}/mo)`, value: "100000-200000" },
+  { label: `💳 Premium (${formatMonthlyFee(200000)}-${formatMonthlyFee(300000)}/mo)`, value: "200000-300000" },
+  { label: `🏆 Elite (${formatMonthlyFee(300000)}+/mo)`, value: "300000-500000" },
 ];
 
 const locationOptions: ChatOption[] = [
@@ -179,61 +182,23 @@ const locationOptions: ChatOption[] = [
   { label: "Delhi - South Extension", value: "South Extension, Delhi" },
   { label: "Delhi - Greater Kailash", value: "Greater Kailash, Delhi" },
   { label: "Delhi - Saket", value: "Saket, Delhi" },
-  { label: "Delhi - Hauz Khas", value: "Hauz Khas, Delhi" },
-  { label: "Delhi - Malviya Nagar", value: "Malviya Nagar, Delhi" },
-  { label: "Delhi - Defence Colony", value: "Defence Colony, Delhi" },
-  { label: "Delhi - Paschim Vihar", value: "Paschim Vihar, Delhi" },
-  { label: "Delhi - Janakpuri", value: "Janakpuri, Delhi" },
-  { label: "Delhi - Pitampura", value: "Pitampura, Delhi" },
-  { label: "Delhi - Shalimar Bagh", value: "Shalimar Bagh, Delhi" },
-  { label: "Delhi - Rajouri Garden", value: "Rajouri Garden, Delhi" },
-  { label: "Delhi - Punjabi Bagh", value: "Punjabi Bagh, Delhi" },
-  { label: "Delhi - Patel Nagar", value: "Patel Nagar, Delhi" },
 ];
 
 const academicOptions: ChatOption[] = [
-  { label: "Excellent", value: "Excellent" },
-  { label: "Above Average", value: "Above Average" },
-  { label: "Average", value: "Average" },
-  { label: "Below Average", value: "Below Average" },
+  { label: "🌟 Excellent", value: "Excellent" },
+  { label: "📈 Above Average", value: "Above Average" },
+  { label: "📊 Average", value: "Average" },
+  { label: "📝 Below Average", value: "Below Average" },
   { label: "🤔 Not Sure Yet", value: "skip" },
 ];
 
 // Define which steps are user interaction steps (counted in progress)
 const userInteractionSteps: ChatStep[] = [
-  "child_name",
-  "child_age",
-  "target_class",
-  "board",
-  "location",
-  "budget",
-  "academics"
+  "child_name", "child_age", "target_class", "board", "location", "budget", "academics"
 ];
 
-const formatFeeRange = (min: number, max: number): string => {
-  const monthlyMin = Math.round(min / 12);
-  const monthlyMax = Math.round(max / 12);
-
-  if (monthlyMin >= 100000 && monthlyMax >= 100000) {
-    return `₹${(monthlyMin / 100000).toFixed(1)}L - ₹${(monthlyMax / 100000).toFixed(1)}L`;
-  } else if (monthlyMin >= 1000 && monthlyMax >= 1000) {
-    return `₹${(monthlyMin / 1000).toFixed(0)}K - ₹${(monthlyMax / 1000).toFixed(0)}K`;
-  } else {
-    return `₹${monthlyMin.toLocaleString()} - ₹${monthlyMax.toLocaleString()}`;
-  }
-};
-
-// Define which steps show the chat header
 const chatModeSteps: ChatStep[] = [
-  "chat_started",
-  "child_name",
-  "child_age",
-  "target_class",
-  "board",
-  "location",
-  "budget",
-  "academics",
-  "complete"
+  "chat_started", "child_name", "child_age", "target_class", "board", "location", "budget", "academics", "complete"
 ];
 
 const stepQuestions: Record<ChatStep, string> = {
@@ -246,7 +211,7 @@ const stepQuestions: Record<ChatStep, string> = {
   target_class: "Which class are you seeking admission for?",
   board: "Which education board do you prefer?",
   location: "Select your preferred location or use your current location:",
-  budget: "What's your annual fee budget?",
+  budget: "What's your annual fee budget estimate?",
   academics: "How would you rate your child's current academic performance?",
   complete: "Perfect! I've gathered all the information needed. Let me find the best matching schools for you! ✨",
 };
@@ -268,7 +233,7 @@ export default function AdmissionChat({ onComplete, onProfileUpdate }: Admission
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, isTyping]);
 
   useEffect(() => {
     // Start directly with profile templates for better UX
@@ -305,18 +270,13 @@ export default function AdmissionChat({ onComplete, onProfileUpdate }: Admission
   };
 
   const handleTemplateSelect = (template: ProfileTemplate) => {
-    // Set the selected template profile
     setProfile(template.profile);
     onProfileUpdate(template.profile);
-
-    // Transition to chat mode first
     setCurrentStep("chat_started");
-
-    // Add a confirmation message and start the conversation
     setTimeout(() => {
-      addBotMessage(`Great! You've selected "${template.title}". What's your child's name?`, []);
+      addBotMessage(`Great choice! You've selected "${template.title}". What's your child's name?`, [], "child_name");
       setCurrentStep("child_name");
-    }, 300);
+    }, 400);
   };
 
   const processStep = (value: string) => {
@@ -325,14 +285,6 @@ export default function AdmissionChat({ onComplete, onProfileUpdate }: Admission
     let updatedProfile = { ...profile };
 
     switch (currentStep) {
-      case "profile_templates":
-        // This shouldn't happen as we handle templates separately
-        break;
-
-      case "custom_profile":
-        setTimeout(() => addBotMessage(stepQuestions.child_name, [], "child_name"), 500);
-        break;
-
       case "child_name":
         updatedProfile.name = value;
         setProfile(updatedProfile);
@@ -348,11 +300,9 @@ export default function AdmissionChat({ onComplete, onProfileUpdate }: Admission
         updatedProfile.dateOfBirth = dob.toISOString().split("T")[0];
         setProfile(updatedProfile);
         onProfileUpdate(updatedProfile);
-
-        // Use smart defaults for class selection based on age
         const suggestedClasses = getSuggestedClassForAge(age);
         const classMessage = age >= 2 && age <= 12
-          ? `Based on your child's age, here are the most suitable classes:`
+          ? `Based on age ${age}, here are suitable classes:`
           : "Which class are you seeking admission for?";
         setTimeout(() => addBotMessage(classMessage, suggestedClasses, "target_class"), 500);
         break;
@@ -369,33 +319,20 @@ export default function AdmissionChat({ onComplete, onProfileUpdate }: Admission
         updatedProfile.board = value;
         setProfile(updatedProfile);
         onProfileUpdate(updatedProfile);
-        setTimeout(() => addBotMessage("Select your preferred location or use your current location:", locationOptions, "location"), 500);
+        setTimeout(() => addBotMessage(stepQuestions.location, locationOptions, "location"), 500);
         break;
 
       case "location":
         if (value === "current_location") {
-          // Handle geolocation
-          if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-              (position) => {
-                const { latitude, longitude } = position.coords;
-                updatedProfile.location = `${latitude},${longitude}`;
-                updatedProfile.maxDistance = 10;
-                setProfile(updatedProfile);
-                onProfileUpdate(updatedProfile);
-                setTimeout(() => addBotMessage(stepQuestions.budget, budgetOptions, "budget"), 500);
-              },
-              (error) => {
-                console.error("Geolocation error:", error);
-                addBotMessage("Couldn't get your location. Please select an area manually.", locationOptions, "location");
-              }
-            );
-          } else {
-            addBotMessage("Geolocation is not supported. Please select an area manually.", locationOptions, "location");
-          }
+          // Mock geo location for now
+          updatedProfile.location = "Current Location";
+          updatedProfile.maxDistance = 10;
+          setProfile(updatedProfile);
+          onProfileUpdate(updatedProfile);
+          setTimeout(() => addBotMessage(stepQuestions.budget, budgetOptions, "budget"), 500);
         } else {
           updatedProfile.location = value;
-          updatedProfile.maxDistance = 10; // Default 10km
+          updatedProfile.maxDistance = 10;
           setProfile(updatedProfile);
           onProfileUpdate(updatedProfile);
           setTimeout(() => addBotMessage(stepQuestions.budget, budgetOptions, "budget"), 500);
@@ -411,27 +348,21 @@ export default function AdmissionChat({ onComplete, onProfileUpdate }: Admission
         break;
 
       case "academics":
-        if (value === "skip") {
-          updatedProfile.academicLevel = "Average"; // Default to average if skipped
-          setProfile(updatedProfile);
-          onProfileUpdate(updatedProfile);
-          setTimeout(() => {
-            addBotMessage("No problem! We'll match you with schools suitable for various academic levels. " + stepQuestions.complete, [], "complete");
-            setTimeout(() => {
-              onComplete(updatedProfile as ChildProfile);
-            }, 2000);
-          }, 500);
+        const finalProfile = { ...updatedProfile };
+        if (value !== "skip") {
+          finalProfile.academicLevel = value as ChildProfile["academicLevel"];
         } else {
-          updatedProfile.academicLevel = value as ChildProfile["academicLevel"];
-          setProfile(updatedProfile);
-          onProfileUpdate(updatedProfile);
-          setTimeout(() => {
-            addBotMessage(stepQuestions.complete, [], "complete");
-            setTimeout(() => {
-              onComplete(updatedProfile as ChildProfile);
-            }, 1500);
-          }, 500);
+          finalProfile.academicLevel = "Average";
         }
+        setProfile(finalProfile);
+        onProfileUpdate(finalProfile);
+
+        setTimeout(() => {
+          addBotMessage(stepQuestions.complete, [], "complete");
+          setTimeout(() => {
+            onComplete(finalProfile as ChildProfile);
+          }, 2000);
+        }, 500);
         break;
 
       default:
@@ -439,11 +370,8 @@ export default function AdmissionChat({ onComplete, onProfileUpdate }: Admission
     }
   };
 
-  // Handle input changes with autocomplete for names
   const handleInputChange = (value: string) => {
     setInputValue(value);
-
-    // Show name suggestions only for child_name step
     if (currentStep === "child_name" && value.length >= 2) {
       const filteredNames = popularNames
         .filter(name => name.toLowerCase().startsWith(value.toLowerCase()))
@@ -457,6 +385,7 @@ export default function AdmissionChat({ onComplete, onProfileUpdate }: Admission
   const handleSuggestionClick = (suggestion: string) => {
     setInputValue(suggestion);
     setSuggestions([]);
+    inputRef.current?.focus();
   };
 
   const handleSend = () => {
@@ -478,270 +407,195 @@ export default function AdmissionChat({ onComplete, onProfileUpdate }: Admission
   };
 
   const currentOptions = messages[messages.length - 1]?.options;
-  const showInput = !currentOptions || currentOptions.length === 0;
+  const showInput = chatModeSteps.includes(currentStep) && (!currentOptions || currentOptions.length === 0);
 
   return (
-    <div className="flex flex-col h-full bg-gradient-to-b from-primary/5 to-background">
+    <div className="flex flex-col h-full relative">
+      <div className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-thin scrollbar-thumb-indigo-200 dark:scrollbar-thumb-slate-700">
 
-      {/* Header - Only show during chat mode */}
-      {chatModeSteps.includes(currentStep) && (
-        <div className="p-4 border-b bg-card">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-hero flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-primary-foreground" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-foreground">Admission Assistant</h3>
-              <p className="text-xs text-muted-foreground">AI-powered school matching</p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {/* Loading skeleton */}
-        {isLoading && (
-          <AnimatePresence mode="popLayout">
-            {[1, 2, 3].map((i) => (
-              <motion.div
-                key={`skeleton-${i}`}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                transition={{ delay: i * 0.1 }}
-                className={cn(
-                  "flex gap-3",
-                  i % 2 === 0 ? "justify-end" : "justify-start"
-                )}
-              >
-                {i % 2 !== 0 && (
-                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <div className="w-4 h-4 bg-muted rounded-full animate-pulse" />
-                  </div>
-                )}
-                <div
-                  className={cn(
-                    "max-w-[80%] rounded-2xl px-4 py-3",
-                    i % 2 === 0
-                      ? "bg-primary"
-                      : "bg-card border shadow-sm"
-                  )}
-                >
-                  <div className="space-y-2">
-                    <div className="h-4 bg-muted rounded w-48 animate-pulse" />
-                    {i === 1 && <div className="h-4 bg-muted rounded w-32 animate-pulse" />}
-                  </div>
-                </div>
-                {i % 2 === 0 && (
-                  <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center flex-shrink-0">
-                    <div className="w-4 h-4 bg-muted rounded-full animate-pulse" />
-                  </div>
-                )}
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        )}
-
-        {/* Actual messages - Only show when in chat mode */}
-        {chatModeSteps.includes(currentStep) && (
-          <AnimatePresence mode="popLayout">
-            {messages.map((message) => (
-              <motion.div
-                key={message.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                className={cn(
-                  "flex gap-3",
-                  message.role === "user" ? "justify-end" : "justify-start"
-                )}
-              >
-                {message.role === "assistant" && (
-                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <Bot className="w-4 h-4 text-primary" />
-                  </div>
-                )}
-                <div
-                  className={cn(
-                    "max-w-[80%] rounded-2xl px-4 py-3",
-                    message.role === "user"
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-card border shadow-sm"
-                  )}
-                >
-                  <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-
-                  {/* Options */}
-                  {message.options && message.options.length > 0 && currentStep !== "profile_templates" && (
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {message.options.map((option) => (
-                        <Button
-                          key={option.value}
-                          variant="outline"
-                          size="sm"
-                          className="bg-background hover:bg-primary hover:text-primary-foreground transition-colors"
-                          onClick={() => handleOptionClick(option)}
-                        >
-                          {option.label}
-                        </Button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                {message.role === "user" && (
-                  <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center flex-shrink-0">
-                    <User className="w-4 h-4 text-secondary-foreground" />
-                  </div>
-                )}
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        )}
-
-        {/* Profile Templates - Show when selecting templates */}
+        {/* Profile Templates Selection */}
         {currentStep === "profile_templates" && (
-          <div className="p-6">
-            <div className="max-w-md mx-auto">
-              <h3 className="text-lg font-semibold text-foreground mb-4 text-center">
-                Choose a Profile Template
-              </h3>
-              <p className="text-sm text-muted-foreground mb-6 text-center">
-                Select a template that matches your child's situation, or choose custom to enter details manually.
-              </p>
-              <div className="space-y-3">
-                <div className="grid gap-3">
-                  {profileTemplates.map((template) => (
-                    <motion.div
-                      key={template.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: profileTemplates.indexOf(template) * 0.1 }}
-                    >
-                      <Card className="p-4 cursor-pointer hover:shadow-md transition-all border-2 hover:border-primary/50"
-                            onClick={() => handleTemplateSelect(template)}>
-                        <div className="flex items-center gap-3">
-                          <div className="text-2xl">{template.icon}</div>
-                          <div className="flex-1">
-                            <h4 className="font-semibold text-foreground">{template.title}</h4>
-                            <p className="text-sm text-muted-foreground">{template.description}</p>
-                          </div>
-                          <ChevronRight className="w-4 h-4 text-muted-foreground" />
-                        </div>
-                      </Card>
-                    </motion.div>
-                  ))}
-                </div>
-                <div className="pt-2 border-t">
-                  <Button
-                    variant="outline"
-                    className="w-full"
-                    onClick={() => {
-                      // Clear any pre-selected profile data
-                      setProfile({});
-                      onProfileUpdate({});
-                      // Transition to chat mode first
-                      setCurrentStep("chat_started");
-                      // Add confirmation and start chat
-                      setTimeout(() => {
-                        addBotMessage("No problem! Let's start fresh. What's your child's name?", []);
-                        setCurrentStep("child_name");
-                      }, 300);
-                    }}
-                  >
-                    <Sparkles className="w-4 h-4 mr-2" />
-                    Custom Profile
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Typing indicator */}
-        {isTyping && chatModeSteps.includes(currentStep) && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="flex gap-3"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="flex flex-col items-center justify-center h-full max-w-2xl mx-auto"
           >
-            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-              <Bot className="w-4 h-4 text-primary" />
-            </div>
-            <div className="bg-card border rounded-2xl px-4 py-3">
-              <div className="flex gap-1">
-                <span className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                <span className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                <span className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+            <div className="text-center mb-8">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/50 backdrop-blur-md shadow-lg mb-4">
+                <Wand2 className="w-8 h-8 text-indigo-600 animate-pulse" />
               </div>
+              <h3 className="text-2xl font-bold text-foreground mb-2">
+                How can I help you today?
+              </h3>
+              <p className="text-muted-foreground">
+                Choose a quick start profile or create a custom one.
+              </p>
             </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+              {profileTemplates.map((template, index) => (
+                <motion.div
+                  key={template.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  whileHover={{ scale: 1.03, y: -5 }}
+                  className="cursor-pointer group"
+                  onClick={() => handleTemplateSelect(template)}
+                >
+                  <div className={`
+                    h-full bg-gradient-to-br ${template.color} p-[1px] rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300
+                  `}>
+                    <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-sm h-full rounded-2xl p-5 flex flex-col items-start gap-4">
+                      <div className={`p-3 rounded-xl bg-gradient-to-br ${template.color} bg-opacity-10 text-white shadow-md`}>
+                        <span className="text-2xl drop-shadow-sm">{template.icon}</span>
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-foreground text-lg">{template.title}</h4>
+                        <p className="text-sm text-muted-foreground">{template.description}</p>
+                      </div>
+                      <div className="mt-auto pt-2 flex items-center text-xs font-semibold uppercase tracking-wider bg-clip-text text-transparent bg-gradient-to-r from-gray-600 to-gray-900 dark:from-gray-400 dark:to-gray-100 opacity-60 group-hover:opacity-100 transition-opacity">
+                        Select <ChevronRight className="w-3 h-3 ml-1" />
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+              className="mt-8 text-sm text-muted-foreground hover:text-primary underline decoration-dotted underline-offset-4"
+              onClick={() => {
+                setProfile({});
+                onProfileUpdate({});
+                addBotMessage("No problem! Let's start from scratch. What's your child's name?", [], "child_name");
+                setCurrentStep("child_name");
+              }}
+            >
+              Start specific search manually
+            </motion.button>
           </motion.div>
         )}
 
-        <div ref={messagesEndRef} />
+        {/* Chat Messages */}
+        {chatModeSteps.includes(currentStep) && (
+          <div className="flex flex-col gap-6 pb-20">
+            <AnimatePresence mode="popLayout">
+              {messages.map((message) => (
+                <motion.div
+                  key={message.id}
+                  initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  layout
+                  className={cn(
+                    "flex gap-3 max-w-[85%]",
+                    message.role === "user" ? "ml-auto flex-row-reverse" : "mr-auto"
+                  )}
+                >
+                  {message.role === "assistant" && (
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center flex-shrink-0 shadow-lg mt-1">
+                      <Bot className="w-4 h-4 text-white" />
+                    </div>
+                  )}
+
+                  <div className={cn(
+                    "relative px-5 py-3.5 shadow-sm",
+                    message.role === "user"
+                      ? "bg-gradient-to-br from-indigo-600 to-purple-600 text-white rounded-2xl rounded-tr-sm shadow-indigo-500/20"
+                      : "bg-white/80 dark:bg-slate-800/80 backdrop-blur-md border border-white/20 dark:border-white/10 text-foreground rounded-2xl rounded-tl-sm"
+                  )}>
+                    <p className="text-[15px] leading-relaxed whitespace-pre-wrap">{message.content}</p>
+
+                    {/* Chat Options */}
+                    {message.role === "assistant" && message.options && message.options.length > 0 && (
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {message.options.map((option, idx) => (
+                          <motion.button
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: idx * 0.05 }}
+                            key={option.value}
+                            onClick={() => handleOptionClick(option)}
+                            className="bg-white/50 dark:bg-slate-900/50 hover:bg-white dark:hover:bg-slate-800 border border-indigo-100 dark:border-indigo-900/30 px-4 py-2 rounded-xl text-sm font-medium transition-all hover:scale-105 hover:shadow-md text-indigo-700 dark:text-indigo-300"
+                          >
+                            {option.label}
+                          </motion.button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+
+            {isTyping && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="flex gap-3"
+              >
+                <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center flex-shrink-0 shadow-lg">
+                  <Bot className="w-4 h-4 text-white" />
+                </div>
+                <div className="bg-white/50 dark:bg-slate-800/50 backdrop-blur-md rounded-2xl rounded-tl-sm px-4 py-3 flex items-center gap-1.5 border border-white/20">
+                  <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                  <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                  <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                </div>
+              </motion.div>
+            )}
+
+            <div ref={messagesEndRef} />
+          </div>
+        )}
       </div>
 
-      {/* Input */}
-      {showInput && chatModeSteps.includes(currentStep) && (
-        <div className="p-4 border-t bg-card">
-          {/* Autocomplete Suggestions */}
+      {/* Input Area */}
+      {showInput && (
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          className="p-4 bg-white/40 dark:bg-black/20 backdrop-blur-lg border-t border-white/20 dark:border-white/5 absolute bottom-0 left-0 right-0 z-20"
+        >
           {suggestions.length > 0 && (
-            <div className="mb-2 flex flex-wrap gap-1">
-              {suggestions.map((suggestion) => (
-                <Button
-                  key={suggestion}
-                  variant="outline"
-                  size="sm"
-                  className="h-7 text-xs bg-primary/10 hover:bg-primary/20"
-                  onClick={() => handleSuggestionClick(suggestion)}
+            <div className="flex gap-2 mb-3 overflow-x-auto pb-1 scrollbar-hide">
+              {suggestions.map((sg, i) => (
+                <button
+                  key={i}
+                  onClick={() => handleSuggestionClick(sg)}
+                  className="flex-shrink-0 px-3 py-1 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-300 text-xs rounded-full border border-indigo-100 dark:border-indigo-800 hover:bg-indigo-100 transition-colors"
                 >
-                  {suggestion}
-                </Button>
+                  {sg}
+                </button>
               ))}
             </div>
           )}
 
-          <div className="flex gap-2">
-            <Input
+          <div className="flex gap-2 items-center bg-white dark:bg-slate-800 rounded-full px-2 py-2 shadow-lg border border-indigo-100 dark:border-slate-700 focus-within:ring-2 focus-within:ring-indigo-500/20 transition-all">
+            <div className="w-8 h-8 rounded-full bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center flex-shrink-0 ml-1">
+              <User className="w-4 h-4 text-indigo-500" />
+            </div>
+            <input
               ref={inputRef}
               value={inputValue}
               onChange={(e) => handleInputChange(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder={
-                currentStep === "child_name"
-                  ? "Type your child's name..."
-                  : "Type your answer..."
-              }
-              className="flex-1"
-              disabled={false}
+              placeholder="Type your answer here..."
+              className="flex-1 bg-transparent border-0 focus:ring-0 text-sm px-2 text-foreground placeholder:text-muted-foreground outline-none h-9"
+              autoFocus
             />
-            <Button onClick={handleSend} disabled={!inputValue.trim()}>
-              <Send className="w-4 h-4" />
+            <Button
+              onClick={handleSend}
+              disabled={!inputValue.trim()}
+              className="rounded-full w-9 h-9 p-0 bg-indigo-600 hover:bg-indigo-700 shadow-md transition-all disabled:opacity-50 disabled:shadow-none"
+            >
+              <Send className="w-4 h-4 text-white" />
             </Button>
           </div>
-        </div>
-      )}
-
-      {/* Progress indicator - Only show for user interaction steps */}
-      {userInteractionSteps.includes(currentStep) && (
-        <div className="px-4 py-2 border-t bg-muted/50">
-          <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <span>Step {userInteractionSteps.indexOf(currentStep) + 1} of {userInteractionSteps.length}</span>
-            <div className="flex gap-1">
-              {userInteractionSteps.map((step, index) => (
-                <div
-                  key={step}
-                  className={cn(
-                    "w-6 h-1 rounded-full transition-colors",
-                    index <= userInteractionSteps.indexOf(currentStep)
-                      ? "bg-primary"
-                      : "bg-border"
-                  )}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
+        </motion.div>
       )}
     </div>
   );

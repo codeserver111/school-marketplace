@@ -54,9 +54,9 @@ export const schools: School[] = [
     lat: 28.5245,
     lng: 77.1570,
     images: [
-      "https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=800",
-      "https://images.unsplash.com/photo-1562774053-701939374585?w=800",
-      "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800"
+      "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1594608661623-aa0bd3a69799?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&q=80&w=800"
     ],
     hasHostel: true,
     hasTransport: true,
@@ -93,9 +93,9 @@ export const schools: School[] = [
     lat: 28.6070,
     lng: 77.2930,
     images: [
-      "https://images.unsplash.com/photo-1594608661623-aa0bd3a69799?w=800",
-      "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800",
-      "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=800"
+      "https://images.unsplash.com/photo-1594608661623-aa0bd3a69799?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&q=80&w=800"
     ],
     hasHostel: false,
     hasTransport: true,
@@ -131,9 +131,9 @@ export const schools: School[] = [
     lat: 28.5965,
     lng: 77.1810,
     images: [
-      "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800",
-      "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800",
-      "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=800"
+      "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&q=80&w=800"
     ],
     hasHostel: false,
     hasTransport: true,
@@ -170,9 +170,9 @@ export const schools: School[] = [
     lat: 28.5494,
     lng: 77.2001,
     images: [
-      "https://images.unsplash.com/photo-1588072432836-e10032774350?w=800",
-      "https://images.unsplash.com/photo-1580894894513-541e068a3e2b?w=800",
-      "https://images.unsplash.com/photo-1577896851231-70ef18881754?w=800"
+      "https://images.unsplash.com/photo-1588072432836-e10032774350?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1580894894513-541e068a3e2b?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&q=80&w=800"
     ],
     hasHostel: true,
     hasTransport: true,
@@ -208,9 +208,9 @@ export const schools: School[] = [
     lat: 28.5564,
     lng: 77.1590,
     images: [
-      "https://images.unsplash.com/photo-1564429238922-5765b7c5c238?w=800",
-      "https://images.unsplash.com/photo-1568667256549-094345857637?w=800",
-      "https://images.unsplash.com/photo-1571260899304-425eee4c7efc?w=800"
+      "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1568667256549-094345857637?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1571260899304-425eee4c7efc?auto=format&fit=crop&q=80&w=800"
     ],
     hasHostel: false,
     hasTransport: true,
@@ -247,9 +247,9 @@ export const schools: School[] = [
     lat: 28.5244,
     lng: 77.2090,
     images: [
-      "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=800",
-      "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=800",
-      "https://images.unsplash.com/photo-1519406596751-0a3ccc4937fe?w=800"
+      "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1427504494785-3a9ca044f45?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1519406596751-0a3ccc4937fe?auto=format&fit=crop&q=80&w=800"
     ],
     hasHostel: true,
     hasTransport: true,
@@ -285,9 +285,9 @@ export const schools: School[] = [
     lat: 28.5600,
     lng: 77.2100,
     images: [
-      "https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=800",
-      "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=800",
-      "https://images.unsplash.com/photo-1544776193-352d25ca82cd?w=800"
+      "https://images.unsplash.com/photo-1587654780291-39c9404d746b?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1544776193-352d25ca82cd?auto=format&fit=crop&q=80&w=800"
     ],
     hasHostel: false,
     hasTransport: true,
@@ -323,9 +323,9 @@ export const schools: School[] = [
     lat: 28.5700,
     lng: 77.2400,
     images: [
-      "https://images.unsplash.com/photo-1562774053-701939374585?w=800",
-      "https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=800",
-      "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800"
+      "https://images.unsplash.com/photo-1560785496-3c9d27877182?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1513258496099-48168024adb0?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1491841573634-28140fc7ced7?auto=format&fit=crop&q=80&w=800"
     ],
     hasHostel: false,
     hasTransport: true,
@@ -361,9 +361,9 @@ export const schools: School[] = [
     lat: 28.4595,
     lng: 77.0266,
     images: [
-      "https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=800",
-      "https://images.unsplash.com/photo-1562774053-701939374585?w=800",
-      "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=800"
+      "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&q=80&w=800"
     ],
     hasHostel: true,
     hasTransport: true,
@@ -400,9 +400,9 @@ export const schools: School[] = [
     lat: 28.5722,
     lng: 77.2311,
     images: [
-      "https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=800",
-      "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=800",
-      "https://images.unsplash.com/photo-1544776193-352d25ca82cd?w=800"
+      "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1587654780291-39c9404d746b?auto=format&fit=crop&q=80&w=800"
     ],
     hasHostel: false,
     hasTransport: true,
@@ -438,9 +438,9 @@ export const schools: School[] = [
     lat: 28.6270,
     lng: 77.3650,
     images: [
-      "https://images.unsplash.com/photo-1594608661623-aa0bd3a69799?w=800",
-      "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800",
-      "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=800"
+      "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&q=80&w=800"
     ],
     hasHostel: false,
     hasTransport: true,
@@ -476,9 +476,9 @@ export const schools: School[] = [
     lat: 28.6320,
     lng: 77.2200,
     images: [
-      "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=800",
-      "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800",
-      "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=800"
+      "https://images.unsplash.com/photo-1594608661623-aa0bd3a69799?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&q=80&w=800"
     ],
     hasHostel: true,
     hasTransport: true,
@@ -514,9 +514,9 @@ export const schools: School[] = [
     lat: 28.4089,
     lng: 77.3178,
     images: [
-      "https://images.unsplash.com/photo-1588072432836-e10032774350?w=800",
-      "https://images.unsplash.com/photo-1580894894513-541e068a3e2b?w=800",
-      "https://images.unsplash.com/photo-1577896851231-70ef18881754?w=800"
+      "https://images.unsplash.com/photo-1588072432836-e10032774350?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1580894894513-541e068a3e2b?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&q=80&w=800"
     ],
     hasHostel: false,
     hasTransport: true,
@@ -552,9 +552,9 @@ export const schools: School[] = [
     lat: 28.4950,
     lng: 77.0895,
     images: [
-      "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=800",
-      "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?w=800",
-      "https://images.unsplash.com/photo-1519406596751-0a3ccc4937fe?w=800"
+      "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1519406596751-0a3ccc4937fe?auto=format&fit=crop&q=80&w=800"
     ],
     hasHostel: false,
     hasTransport: true,
@@ -590,9 +590,9 @@ export const schools: School[] = [
     lat: 28.5921,
     lng: 77.0460,
     images: [
-      "https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=800",
-      "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=800",
-      "https://images.unsplash.com/photo-1544776193-352d25ca82cd?w=800"
+      "https://images.unsplash.com/photo-1587654780291-39c9404d746b?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&q=80&w=800",
+      "https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=800"
     ],
     hasHostel: false,
     hasTransport: true,
@@ -647,11 +647,11 @@ export const filterSchools = (filters: {
         return false;
       }
     }
-    
+
     if (filters.board && filters.board !== "All" && school.board !== filters.board) {
       return false;
     }
-    
+
     if (filters.feeRange && filters.feeRange !== "All") {
       const fee = school.annualFee;
       switch (filters.feeRange) {
@@ -669,23 +669,23 @@ export const filterSchools = (filters: {
           break;
       }
     }
-    
+
     if (filters.classLevel && filters.classLevel !== "All") {
       if (!school.classLevels.includes(filters.classLevel as ClassLevel)) {
         return false;
       }
     }
-    
+
     // Distance filter
     if (filters.maxDistance && filters.maxDistance < 50) {
       if (school.distance > filters.maxDistance) {
         return false;
       }
     }
-    
+
     if (filters.hasHostel && !school.hasHostel) return false;
     if (filters.hasTransport && !school.hasTransport) return false;
-    
+
     if (filters.searchQuery) {
       const query = filters.searchQuery.toLowerCase();
       return (
@@ -694,7 +694,7 @@ export const filterSchools = (filters: {
         school.board.toLowerCase().includes(query)
       );
     }
-    
+
     return true;
   });
 };
